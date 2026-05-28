@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Consulter un mémoire — UATM</title>
+  <link rel="stylesheet" href="../../css/global.css"/>
+  <link rel="stylesheet" href="../../css/components.css"/>
+  <link rel="stylesheet" href="../../css/pages/dashboard.css"/>
+  <link rel="stylesheet" href="../../css/pages/consulter.css"/>
+</head>
+<body class="dashboard-body">
+
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <img src="../../assets/logo.png" alt="UATM"/>
+      <div class="brand-text">UATM <span>Gestion des Mémoires</span></div>
+    </div>
+    <div class="navbar-user">
+      <span class="badge badge-info" id="role-badge">—</span>
+      <strong class="user-name" id="user-name">—</strong>
+    </div>
+  </nav>
+
+  <div class="layout-with-sidebar">
+    <aside class="sidebar" id="sidebar"></aside>
+
+    <main class="main-content">
+      <div id="memoire-content">
+        <p style="text-align:center;padding:60px;color:var(--gris-texte)">Chargement du mémoire…</p>
+      </div>
+    </main>
+  </div>
+
+  <footer class="footer">© 2025 <span>UATM</span> — Système de Gestion des Mémoires</footer>
+
+  <script src="../../js/auth.js"></script>
+  <script src="../../js/api.js"></script>
+  <script src="../../js/router.js"></script>
+  <script>
+    Router.guard();
+    const user = Auth.getUser();
+    const role = Auth.getRole();
+    if (user) {
+      document.getElementById('user-name').textContent  = user.nom || user.email;
+      document.getElementById('role-badge').textContent = role || '—';
+    }
+
+    // Sidebar selon rôle
+    const sidebars = {
+      informaticien: `
+        <div class="sidebar-section-title">Navigation</div>
+        <a href="../informaticien/dashboard.html"><span class="icon">🏠</span> Tableau de bord</a>
+        <a href="../informaticien/upload-memoire.html"><span class="icon">📤</span> Uploader</a>
+        <div class="sidebar-section-title">Bibliothèque</div>
+        <a href="recherche.html"><span class="icon">🔍</span> Rechercher</a>
+        <a href="consulter-memoire.html" class="active"><span class="icon">📖</span> Consulter</a>`,
+      etudiant: `
+        <div class="sidebar-section-title">Navigation</div>
+        <a href="dashboard.html"><span class="icon">🏠</span> Tableau de bord</a>
+        <a href="recherche.html"><span class="icon">🔍</span> Rechercher</a>
+        <a href="consulter-memoire.html" class="active"><span class="icon">📖</span> Consulter</a>`,
+      diplome: `
+        <div class="sidebar-section-title">Navigation</div>
+        <a href="../diplome/dashboard.html"><span class="icon">🏠</span> Tableau de bord</a>
+        <a href="recherche.html"><span class="icon">🔍</span> Rechercher</a>
+        <a href="consulter-memoire.html" class="active"><span class="icon">📖</span> Consulter</a>
+        <a href="../diplome/soumettre-memoire.html"><span class="icon">📝</span> Soumettre</a>`,
+      professeur: `
+        <div class="sidebar-section-title">Navigation</div>
+        <a href="../professeur/dashboard.html"><span class="icon">🏠</span> Tableau de bord</a>
+        <a href="recherche.html"><span class="icon">🔍</span> Rechercher</a>
+        <a href="consulter-memoire.html" class="active"><span class="icon">📖</span> Consulter</a>
+        <a href="../professeur/memoires-en-attente.html"><span class="icon">⏳</span> En attente</a>`
+    };
+    const logout = `<div class="sidebar-logout"><button onclick="Auth.logout()"><span>🚪</span> Déconnexion</button></div>`;
+    document.getElementById('sidebar').innerHTML = (sidebars[role] || '') + logout;
+
+    // Récupérer l'ID depuis l'URL
+    const params = new URLSearchParams(window.location.search);
+    const memoireId = params.get('id');
+
+    async function loadMemoire() {
+      const container = document.getElementById('memoire-content');
+      if (!memoireId) {
+        container.innerHTML = `
+          <div class="alert alert-info">Aucun mémoire sélectionné. <a href="recherche.html" style="color:var(--bleu);font-weight:600">← Retour à la recherche</a></div>`;
+        return;
+      }
+      try {
+        const m = await Api.get(`/memoires/${memoireId}`);
+        if (!m) { container.innerHTML = '<div class="alert alert-error">Mémoire introuvable.</div>'; return; }
+
+        container.innerHTML = `
+          <a href="recherche.html" class="btn btn-ghost btn-sm" style="margin-bottom:16px">← Retour</a>
+
+          <div class="memoire-detail-header">
+            <h2>${m.titre}</h2>
+            <p>👤 ${m.auteur} &nbsp;·&nbsp; 📁 ${m.domaine} &nbsp;·&nbsp; 📅 ${m.annee}</p>
+            <p style="margin-top:4px">👨‍🏫 Directeur : ${m.directeur || '—'}</p>
+            <div class="memoire-actions">
+              <a href="${m.fichier_url}" target="_blank" class="btn btn-white btn-sm" style="background:rgba(255,255,255,0.15);color:#fff;border-color:rgba(255,255,255,0.4)">
+                📄 Télécharger PDF
+              </a>
+              <button class="like-btn ${m.liked ? 'liked' : ''}" id="like-btn" onclick="toggleLike(${m.id})">
+                ❤️ <span id="like-count">${m.likes ?? 0}</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="grid-2" style="align-items:start">
+            <div>
+              <div class="card" style="margin-bottom:20px">
+                <div class="card-header"><h3 class="card-title">📝 Résumé</h3></div>
+                <p style="color:var(--noir);line-height:1.7">${m.resume || 'Aucun résumé disponible.'}</p>
+                ${m.mots_cles ? `<div style="margin-top:12px;display:flex;gap:6px;flex-wrap:wrap">
+                  ${m.mots_cles.split(',').map(k => `<span class="badge badge-info">${k.trim()}</span>`).join('')}
+                </div>` : ''}
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">💬 Commentaires (${m.commentaires?.length ?? 0})</h3>
+              </div>
+              <div class="comment-list" id="comment-list">
+                ${(m.commentaires || []).length
+                  ? m.commentaires.map(c => `
+                      <div class="comment-item">
+                        <div class="comment-author">${c.auteur}</div>
+                        <div class="comment-date">${c.date}</div>
+                        <div class="comment-text">${c.texte}</div>
+                      </div>`).join('')
+                  : '<p style="color:var(--gris-texte)">Aucun commentaire pour l\'instant.</p>'
+                }
+              </div>
+
+              <div style="margin-top:16px;border-top:1px solid var(--gris);padding-top:16px">
+                <div class="form-group">
+                  <label class="form-label">Ajouter un commentaire</label>
+                  <textarea class="form-control" id="new-comment" placeholder="Votre commentaire…" rows="3"></textarea>
+                </div>
+                <button class="btn btn-primary btn-sm" onclick="postComment(${m.id})">Publier</button>
+              </div>
+            </div>
+          </div>
+        `;
+      } catch(e) {
+        container.innerHTML = '<div class="alert alert-error">Erreur de chargement du mémoire.</div>';
+      }
+    }
+
+    async function toggleLike(id) {
+      const btn   = document.getElementById('like-btn');
+      const count = document.getElementById('like-count');
+      try {
+        const res = await Api.post(`/memoires/${id}/like`, {});
+        if (res) {
+          count.textContent = res.likes;
+          btn.classList.toggle('liked', res.liked);
+        }
+      } catch(e) {}
+    }
+
+    async function postComment(id) {
+      const texte = document.getElementById('new-comment').value.trim();
+      if (!texte) return;
+      try {
+        const res = await Api.post(`/memoires/${id}/commentaires`, { texte });
+        if (res) {
+          const list = document.getElementById('comment-list');
+          const item = document.createElement('div');
+          item.className = 'comment-item';
+          item.innerHTML = `
+            <div class="comment-author">${Auth.getUser()?.nom || 'Moi'}</div>
+            <div class="comment-date">À l'instant</div>
+            <div class="comment-text">${texte}</div>`;
+          list.appendChild(item);
+          document.getElementById('new-comment').value = '';
+        }
+      } catch(e) {}
+    }
+
+    loadMemoire();
+  </script>
+</body>
+</html>

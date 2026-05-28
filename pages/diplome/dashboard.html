@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dashboard — Diplomé</title>
+  <link rel="stylesheet" href="../../css/global.css"/>
+  <link rel="stylesheet" href="../../css/components.css"/>
+  <link rel="stylesheet" href="../../css/pages/dashboard.css"/>
+</head>
+<body class="dashboard-body">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <img src="../../assets/logo.png" alt="UATM"/>
+      <div class="brand-text">UATM <span>Gestion des Mémoires</span></div>
+    </div>
+    <div class="navbar-user">
+      <span class="badge badge-warning">Diplomé</span>
+      <strong class="user-name" id="user-name">—</strong>
+    </div>
+  </nav>
+
+  <div class="layout-with-sidebar">
+    <aside class="sidebar">
+      <div class="sidebar-section-title">Navigation</div>
+      <a href="dashboard.html" class="active"><span class="icon">🏠</span> Tableau de bord</a>
+      <a href="soumettre-memoire.html"><span class="icon">📝</span> Soumettre un mémoire</a>
+      <div class="sidebar-section-title">Bibliothèque</div>
+      <a href="../../pages/etudiant/recherche.html"><span class="icon">🔍</span> Rechercher</a>
+      <a href="../../pages/etudiant/consulter-memoire.html"><span class="icon">📖</span> Consulter</a>
+      <div class="sidebar-logout">
+        <button onclick="Auth.logout()"><span>🚪</span> Déconnexion</button>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <div class="welcome-banner">
+        <div>
+          <h2>Bienvenue, <span id="welcome-name">—</span> 🎓</h2>
+          <p>Soumettez votre mémoire et suivez son statut de validation.</p>
+          <div class="quick-actions">
+            <a href="soumettre-memoire.html" class="quick-btn">📝 Soumettre mon mémoire</a>
+          </div>
+        </div>
+        <div class="welcome-icon">🏆</div>
+      </div>
+
+      <div class="stats-grid">
+        <div class="card stat-card">
+          <div class="stat-icon">📝</div>
+          <div class="stat-number" id="stat-soumis">—</div>
+          <div class="stat-label">Soumissions</div>
+        </div>
+        <div class="card stat-card">
+          <div class="stat-icon">⏳</div>
+          <div class="stat-number" id="stat-attente">—</div>
+          <div class="stat-label">En attente</div>
+        </div>
+        <div class="card stat-card">
+          <div class="stat-icon">✅</div>
+          <div class="stat-number" id="stat-valide">—</div>
+          <div class="stat-label">Validé</div>
+        </div>
+        <div class="card stat-card">
+          <div class="stat-icon">🔔</div>
+          <div class="stat-number" id="stat-notifs">—</div>
+          <div class="stat-label">Notifications</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">📋 Mes soumissions</h3>
+          <a href="soumettre-memoire.html" class="btn btn-primary btn-sm">+ Nouvelle soumission</a>
+        </div>
+        <div id="soumissions-list" class="recent-list">
+          <p style="color:var(--gris-texte);text-align:center;padding:20px">Chargement…</p>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <footer class="footer">© 2025 <span>UATM</span> — Système de Gestion des Mémoires</footer>
+
+  <script src="../../js/auth.js"></script>
+  <script src="../../js/api.js"></script>
+  <script src="../../js/router.js"></script>
+  <script>
+    Router.guard('diplome');
+    const user = Auth.getUser();
+    if (user) {
+      document.getElementById('user-name').textContent    = user.nom || user.email;
+      document.getElementById('welcome-name').textContent = user.prenom || user.nom || 'Diplomé';
+    }
+    async function loadData() {
+      try {
+        const data = await Api.get('/mes-soumissions');
+        const list = document.getElementById('soumissions-list');
+        if (data && data.length) {
+          document.getElementById('stat-soumis').textContent = data.length;
+          document.getElementById('stat-attente').textContent = data.filter(s => s.statut === 'attente').length;
+          document.getElementById('stat-valide').textContent  = data.filter(s => s.statut === 'valide').length;
+          list.innerHTML = data.map(s => `
+            <div class="recent-item">
+              <div class="recent-icon">📄</div>
+              <div class="recent-info">
+                <strong>${s.titre}</strong>
+                <span>Soumis le ${s.date}</span>
+              </div>
+              <span class="badge ${s.statut === 'valide' ? 'badge-success' : s.statut === 'rejete' ? 'badge-danger' : 'badge-warning'}">
+                ${s.statut === 'valide' ? 'Validé' : s.statut === 'rejete' ? 'Rejeté' : 'En attente'}
+              </span>
+            </div>`).join('');
+        } else {
+          list.innerHTML = '<p style="color:var(--gris-texte);text-align:center;padding:20px">Aucune soumission. <a href="soumettre-memoire.html" style="color:var(--bleu)">Soumettre maintenant →</a></p>';
+        }
+      } catch(e) {}
+    }
+    loadData();
+  </script>
+</body>
+</html>

@@ -1,11 +1,6 @@
-/* ================================================
-   GLOBAL.CSS - Système de Design UATM
-   Palette : Bleu #1A4DB3 | Rouge #D32F2F | Gris clair
-   ================================================ */
-
 @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Raleway:wght@300;400;500;600&display=swap');
 
-/* --- Variables --- */
+/*  Variables */
 :root {
   --bleu:        #1A4DB3;
   --bleu-fonce:  #0f2f6e;
@@ -29,7 +24,7 @@
   --transition:  all 0.25s ease;
 }
 
-/* --- Reset --- */
+/* Reset */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 html { scroll-behavior: smooth; }
@@ -47,14 +42,14 @@ a { text-decoration: none; color: inherit; transition: var(--transition); }
 img { max-width: 100%; display: block; }
 ul { list-style: none; }
 
-/* --- Typographie --- */
+/* Typographie */
 h1, h2, h3, h4 { font-family: var(--font-titre); color: var(--bleu-fonce); line-height: 1.2; }
 h1 { font-size: 2rem; }
 h2 { font-size: 1.5rem; }
 h3 { font-size: 1.2rem; }
 p  { color: var(--gris-texte); }
 
-/* --- Layout utilitaires --- */
+/* Layout utilitaires */
 .container      { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
 .flex           { display: flex; }
 .flex-center    { display: flex; align-items: center; justify-content: center; }
@@ -68,7 +63,7 @@ p  { color: var(--gris-texte); }
 .mt-lg          { margin-top: 32px; }
 .text-center    { text-align: center; }
 
-/* --- Badges rôles --- */
+/* Badges rôles */
 .badge {
   display: inline-block;
   padding: 3px 12px;
@@ -82,7 +77,7 @@ p  { color: var(--gris-texte); }
 .badge-warning   { background: #fff8e1; color: #f57f17; }
 .badge-danger    { background: var(--rouge-clair); color: var(--rouge); }
 
-/* --- Scrollbar --- */
+/* Scrollbar */
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: var(--gris); }
 ::-webkit-scrollbar-thumb { background: var(--gris-moyen); border-radius: 3px; }
