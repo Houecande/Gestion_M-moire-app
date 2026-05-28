@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Connexion - UATM Mémoires</title>
+  <link rel="stylesheet" href="css/global.css"/>
+  <link rel="stylesheet" href="css/components.css"/>
+  <link rel="stylesheet" href="css/pages/login.css"/>
+</head>
+<body>
+
+  <div class="login-page">
+
+    <!-- Panneau gauche décoratif -->
+    <div class="login-left">
+      <div class="login-left-content">
+        <img src="assets/logo.png" alt="Logo UATM" class="login-logo"/>
+        <h1>UATM</h1>
+        <p>Système de Gestion<br/>des Mémoires Soutenus</p>
+        <div class="login-divider"></div>
+        <ul class="login-features">
+          <li>📚 Consultez les mémoires</li>
+          <li>📤 Soumettez vos travaux</li>
+          <li>✅ Validez la conformité</li>
+          <li>🔔 Suivez les notifications</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Panneau droit : formulaire -->
+    <div class="login-right">
+      <div class="login-box">
+        <h2>Connexion</h2>
+        <p class="login-subtitle">Accédez à votre espace personnel</p>
+
+        <div id="alert-box" style="display:none"></div>
+
+        <div class="form-group">
+          <label class="form-label" for="email">Adresse e-mail</label>
+          <input class="form-control" type="email" id="email" placeholder="exemple@uatm.edu"/>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="password">Mot de passe</label>
+          <div style="position:relative">
+            <input class="form-control" type="password" id="password" placeholder="••••••••"/>
+            <button onclick="togglePassword()" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--gris-texte);font-size:1rem;" id="eye-btn">👁</button>
+          </div>
+        </div>
+
+        <button class="btn btn-primary" style="width:100%;justify-content:center;margin-top:8px" onclick="handleLogin()" id="login-btn">
+          Se connecter
+        </button>
+
+        <p style="text-align:center;margin-top:20px;font-size:0.85rem;color:var(--gris-texte)">
+          Pas encore de compte ? <a href="#" style="color:var(--bleu);font-weight:600">Contacter l'administration</a>
+        </p>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="js/auth.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/router.js"></script>
+  <script>
+    // Si déjà connecté, rediriger
+    if (Auth.isLoggedIn()) Router.redirectToDashboard();
+
+    function togglePassword() {
+      const input = document.getElementById('password');
+      input.type = input.type === 'password' ? 'text' : 'password';
+    }
+
+    function showAlert(msg, type = 'error') {
+      const box = document.getElementById('alert-box');
+      box.className = `alert alert-${type}`;
+      box.textContent = msg;
+      box.style.display = 'flex';
+    }
+
+    async function handleLogin() {
+      const email    = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+      const btn      = document.getElementById('login-btn');
+
+      if (!email || !password) { showAlert('Veuillez remplir tous les champs.'); return; }
+
+      btn.disabled    = true;
+      btn.textContent = 'Connexion en cours…';
+
+      try {
+        const data = await Api.post('/auth/login', { email, password });
+        if (data && data.token) {
+          Auth.login(data.token, data.user);
+          Router.redirectToDashboard();
+        } else {
+          showAlert(data?.message || 'Email ou mot de passe incorrect.');
+          btn.disabled    = false;
+          btn.textContent = 'Se connecter';
+        }
+      } catch (e) {
+        showAlert('Erreur de connexion. Réessayez.');
+        btn.disabled    = false;
+        btn.textContent = 'Se connecter';
+      }
+    }
+
+    // Connexion avec Enter
+    document.addEventListener('keydown', e => { if (e.key === 'Enter') handleLogin(); });
+  </script>
+</body>
+</html>
