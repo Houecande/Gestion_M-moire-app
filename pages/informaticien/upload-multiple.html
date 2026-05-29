@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Upload multiple — UATM</title>
+  <link rel="stylesheet" href="../../css/global.css"/>
+  <link rel="stylesheet" href="../../css/components.css"/>
+  <link rel="stylesheet" href="../../css/pages/dashboard.css"/>
+  <link rel="stylesheet" href="../../css/pages/upload.css"/>
+</head>
+<body class="dashboard-body">
+
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <img src="../../assets/logo.png" alt="UATM"/>
+      <div class="brand-text">UATM <span>Gestion des Mémoires</span></div>
+    </div>
+    <div class="navbar-user">
+      <span class="badge badge-info">Informaticien</span>
+      <strong class="user-name" id="user-name">—</strong>
+    </div>
+  </nav>
+
+  <div class="layout-with-sidebar">
+    <aside class="sidebar">
+      <div class="sidebar-section-title">Navigation</div>
+      <a href="dashboard.html"><span class="icon">🏠</span> Tableau de bord</a>
+      <a href="upload-memoire.html"><span class="icon">📤</span> Uploader un mémoire</a>
+      <a href="upload-multiple.html" class="active"><span class="icon">📦</span> Upload multiple</a>
+      <div class="sidebar-section-title">Bibliothèque</div>
+      <a href="../../pages/etudiant/recherche.html"><span class="icon">🔍</span> Rechercher</a>
+      <a href="../../pages/etudiant/consulter-memoire.html"><span class="icon">📖</span> Consulter</a>
+      <div class="sidebar-logout">
+        <button onclick="Auth.logout()"><span>🚪</span> Déconnexion</button>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <div class="page-header">
+        <h1>📦 Upload multiple</h1>
+        <p>Importez plusieurs mémoires PDF en une seule opération.</p>
+      </div>
+
+      <div id="alert-box" style="display:none"></div>
+
+      <div class="card" style="max-width:700px">
+        <div class="card-header">
+          <h3 class="card-title">Sélectionner les fichiers</h3>
+          <span class="badge badge-info" id="count-badge">0 fichier(s)</span>
+        </div>
+
+        <!-- Zone drop multiple -->
+        <div class="upload-zone" id="multi-zone" onclick="document.getElementById('multi-input').click()">
+          <div class="upload-icon">📦</div>
+          <p>Cliquez ou glissez plusieurs fichiers PDF</p>
+          <small>Format PDF uniquement · Max 50 Mo par fichier</small>
+        </div>
+        <input type="file" id="multi-input" accept=".pdf" multiple style="display:none"/>
+
+        <!-- Liste des fichiers -->
+        <div class="file-list" id="file-list" style="margin-top:16px"></div>
+
+        <div style="display:flex;gap:12px;margin-top:20px">
+          <button class="btn btn-primary" onclick="uploadAll()" id="upload-all-btn" disabled>
+            📦 Tout uploader
+          </button>
+          <button class="btn btn-ghost" onclick="clearAll()">
+            🗑 Vider la liste
+          </button>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <footer class="footer">© 2025 <span>UATM</span> — Système de Gestion des Mémoires</footer>
+
+  <script src="../../js/auth.js"></script>
+  <script src="../../js/api.js"></script>
+  <script src="../../js/router.js"></script>
+  <script>
+    Router.guard('informaticien');
+    const user = Auth.getUser();
+    if (user) document.getElementById('user-name').textContent = user.nom || user.email;
+
+    let files = [];
+
+    const zone  = document.getElementById('multi-zone');
+    const input = document.getElementById('multi-input');
+
+    zone.addEventListener('dragover',  e => { e.preventDefault(); zone.classList.add('dragover'); });
+    zone.addEventListener('dragleave', () => zone.classList.remove('dragover'));
+    zone.addEventListener('drop', e => {
+      e.preventDefault(); zone.classList.remove('dragover');
+      addFiles([...e.dataTransfer.files]);
+    });
+    input.addEventListener('change', e => addFiles([...e.target.files]));
+
+    function addFiles(newFiles) {
+      newFiles.forEach(f => {
+        if (f.type === 'application/pdf') files.push({ file: f, status: 'pending' });
+      });
+      renderList();
+    }
+
+    function renderList() {
+      const list  = document.getElementById('file-list');
+      const badge = document.getElementById('count-badge');
+      const btn   = document.getElementById('upload-all-btn');
+      badge.textContent = files.length + ' fichier(s)';
+      btn.disabled = files.length === 0;
+
+      list.innerHTML = files.map((item, i) => `
+        <div class="file-list-item ${item.status === 'success' ? 'success' : item.status === 'error' ? 'error' : ''}" id="file-item-${i}">
+          <span>📄</span>
+          <span style="flex:1">${item.file.name}</span>
+          <span style="color:var(--gris-texte);font-size:0.78rem">${formatSize(item.file.size)}</span>
+          <span class="status">
+            ${item.status === 'pending'  ? '⏳' : ''}
+            ${item.status === 'loading' ? '🔄' : ''}
+            ${item.status === 'success' ? '✅' : ''}
+            ${item.status === 'error'   ? '❌' : ''}
+          </span>
+        </div>
+      `).join('');
+    }
+
+    function clearAll() { files = []; renderList(); }
+
+    function formatSize(bytes) {
+      if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' Ko';
+      return (bytes / (1024 * 1024)).toFixed(1) + ' Mo';
+    }
+
+    async function uploadAll() {
+      document.getElementById('upload-all-btn').disabled = true;
+      for (let i = 0; i < files.length; i++) {
+        if (files[i].status === 'success') continue;
+        files[i].status = 'loading';
+        renderList();
+        try {
+          const fd = new FormData();
+          fd.append('fichier', files[i].file);
+          fd.append('titre',   files[i].file.name.replace('.pdf', ''));
+          const res = await Api.postFile('/memoires', fd);
+          files[i].status = (res && res.id) ? 'success' : 'error';
+        } catch(e) {
+          files[i].status = 'error';
+        }
+        renderList();
+      }
+      document.getElementById('upload-all-btn').disabled = false;
+    }
+  </script>
+</body>
+</html>

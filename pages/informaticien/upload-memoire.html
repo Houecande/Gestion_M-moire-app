@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Uploader un mémoire — UATM</title>
+  <link rel="stylesheet" href="../../css/global.css"/>
+  <link rel="stylesheet" href="../../css/components.css"/>
+  <link rel="stylesheet" href="../../css/pages/dashboard.css"/>
+  <link rel="stylesheet" href="../../css/pages/upload.css"/>
+</head>
+<body class="dashboard-body">
+
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <img src="../../assets/logo.png" alt="UATM"/>
+      <div class="brand-text">UATM <span>Gestion des Mémoires</span></div>
+    </div>
+    <div class="navbar-user">
+      <span class="badge badge-info">Informaticien</span>
+      <strong class="user-name" id="user-name">—</strong>
+    </div>
+  </nav>
+
+  <div class="layout-with-sidebar">
+    <aside class="sidebar">
+      <div class="sidebar-section-title">Navigation</div>
+      <a href="dashboard.html"><span class="icon">🏠</span> Tableau de bord</a>
+      <a href="upload-memoire.html" class="active"><span class="icon">📤</span> Uploader un mémoire</a>
+      <a href="upload-multiple.html"><span class="icon">📦</span> Upload multiple</a>
+      <div class="sidebar-section-title">Bibliothèque</div>
+      <a href="../../pages/etudiant/recherche.html"><span class="icon">🔍</span> Rechercher</a>
+      <a href="../../pages/etudiant/consulter-memoire.html"><span class="icon">📖</span> Consulter</a>
+      <div class="sidebar-logout">
+        <button onclick="Auth.logout()"><span>🚪</span> Déconnexion</button>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <div class="page-header">
+        <h1>📤 Uploader un mémoire</h1>
+        <p>Remplissez les informations du mémoire et joignez le fichier PDF.</p>
+      </div>
+
+      <div id="alert-box" style="display:none"></div>
+
+      <div class="grid-2" style="align-items:start">
+
+        <!-- Formulaire métadonnées -->
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">📝 Informations du mémoire</h3>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Titre du mémoire *</label>
+            <input class="form-control" type="text" id="titre" placeholder="Ex: Conception d'un système de…"/>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Auteur(s) *</label>
+            <input class="form-control" type="text" id="auteur" placeholder="Nom Prénom de l'étudiant"/>
+          </div>
+
+          <div class="grid-2" style="gap:12px">
+            <div class="form-group">
+              <label class="form-label">Année académique *</label>
+              <select class="form-control" id="annee">
+                <option value="">— Choisir —</option>
+                <option>2024-2025</option>
+                <option>2023-2024</option>
+                <option>2022-2023</option>
+                <option>2021-2022</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Domaine / Filière *</label>
+              <select class="form-control" id="domaine">
+                <option value="">— Choisir —</option>
+                <option>Informatique</option>
+                <option>Génie Civil</option>
+                <option>Management</option>
+                <option>Droit</option>
+                <option>Sciences</option>
+                <option>Autre</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Directeur de mémoire</label>
+            <input class="form-control" type="text" id="directeur" placeholder="Nom du professeur encadreur"/>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Résumé</label>
+            <textarea class="form-control" id="resume" placeholder="Résumé court du mémoire…" rows="4"></textarea>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Mots-clés</label>
+            <input class="form-control" type="text" id="mots_cles" placeholder="Ex: IA, base de données, réseau"/>
+          </div>
+        </div>
+
+        <!-- Upload fichier -->
+        <div style="display:flex;flex-direction:column;gap:20px">
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">📎 Fichier PDF</h3>
+            </div>
+
+            <div class="upload-zone" id="upload-zone" onclick="document.getElementById('file-input').click()">
+              <div class="upload-icon">📄</div>
+              <p>Cliquez ou glissez votre fichier ici</p>
+              <small>Format PDF uniquement · Max 50 Mo</small>
+            </div>
+            <input type="file" id="file-input" accept=".pdf" style="display:none"/>
+
+            <div id="file-preview" style="display:none" class="file-preview">
+              <span class="file-icon">📄</span>
+              <div class="file-info">
+                <strong id="file-name">—</strong>
+                <span id="file-size">—</span>
+              </div>
+              <button class="remove-file" onclick="removeFile()">✕</button>
+            </div>
+
+            <div class="progress-wrap" id="progress-wrap" style="display:none">
+              <div class="progress-bar-bg">
+                <div class="progress-bar-fill" id="progress-fill"></div>
+              </div>
+              <div class="progress-label" id="progress-label">0%</div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">⚙️ Options</h3>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Statut de publication</label>
+              <select class="form-control" id="statut">
+                <option value="publie">Publié (visible par tous)</option>
+                <option value="prive">Privé (validation requise)</option>
+              </select>
+            </div>
+            <button class="btn btn-primary" style="width:100%;justify-content:center" onclick="submitMemoire()" id="submit-btn">
+              📤 Publier le mémoire
+            </button>
+            <a href="dashboard.html" class="btn btn-ghost" style="width:100%;justify-content:center;margin-top:8px">
+              Annuler
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <footer class="footer">© 2025 <span>UATM</span> — Système de Gestion des Mémoires</footer>
+
+  <script src="../../js/auth.js"></script>
+  <script src="../../js/api.js"></script>
+  <script src="../../js/router.js"></script>
+  <script src="../../js/pages/upload.js"></script>
+  <script>
+    Router.guard('informaticien');
+    const user = Auth.getUser();
+    if (user) document.getElementById('user-name').textContent = user.nom || user.email;
+  </script>
+</body>
+</html>

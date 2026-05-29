@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Valider un mémoire — UATM</title>
+  <link rel="stylesheet" href="../../css/global.css"/>
+  <link rel="stylesheet" href="../../css/components.css"/>
+  <link rel="stylesheet" href="../../css/pages/dashboard.css"/>
+  <link rel="stylesheet" href="../../css/pages/consulter.css"/>
+</head>
+<body class="dashboard-body">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <img src="../../assets/logo.png" alt="UATM"/>
+      <div class="brand-text">UATM <span>Gestion des Mémoires</span></div>
+    </div>
+    <div class="navbar-user">
+      <span class="badge badge-danger">Professeur</span>
+      <strong class="user-name" id="user-name">—</strong>
+    </div>
+  </nav>
+
+  <div class="layout-with-sidebar">
+    <aside class="sidebar">
+      <div class="sidebar-section-title">Navigation</div>
+      <a href="dashboard.html"><span class="icon">🏠</span> Tableau de bord</a>
+      <a href="memoires-en-attente.html"><span class="icon">⏳</span> Mémoires en attente</a>
+      <a href="valider-memoire.html" class="active"><span class="icon">✅</span> Valider conformité</a>
+      <div class="sidebar-logout">
+        <button onclick="Auth.logout()"><span>🚪</span> Déconnexion</button>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <a href="memoires-en-attente.html" class="btn btn-ghost btn-sm" style="margin-bottom:16px">← Retour à la liste</a>
+
+      <div id="alert-box" style="display:none"></div>
+      <div id="validation-content">
+        <p style="text-align:center;padding:60px;color:var(--gris-texte)">Chargement…</p>
+      </div>
+    </main>
+  </div>
+
+  <footer class="footer">© 2025 <span>UATM</span> — Système de Gestion des Mémoires</footer>
+
+  <script src="../../js/auth.js"></script>
+  <script src="../../js/api.js"></script>
+  <script src="../../js/router.js"></script>
+  <script>
+    Router.guard('professeur');
+    const user = Auth.getUser();
+    if (user) document.getElementById('user-name').textContent = user.nom || user.email;
+
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get('id');
+
+    function showAlert(msg, type='error') {
+      const b = document.getElementById('alert-box');
+      b.className=`alert alert-${type}`; b.textContent=msg; b.style.display='flex';
+    }
+
+    async function loadMemoire() {
+      const c = document.getElementById('validation-content');
+      if (!id) { c.innerHTML = '<div class="alert alert-info">Aucun mémoire sélectionné. <a href="memoires-en-attente.html" style="color:var(--bleu)">← Retour à la liste</a></div>'; return; }
+      try {
+        const m = await Api.get(`/soumissions/${id}`);
+        if (!m) { c.innerHTML = '<div class="alert alert-error">Mémoire introuvable.</div>'; return; }
+        c.innerHTML = `
+          <div class="memoire-detail-header" style="margin-bottom:24px">
+            <h2>${m.titre}</h2>
+            <p>👤 ${m.auteur} &nbsp;·&nbsp; 📁 ${m.domaine} &nbsp;·&nbsp; 📅 ${m.annee}</p>
+            <p style="margin-top:4px">👨‍🏫 Directeur : ${m.directeur || '—'}</p>
+            <div class="memoire-actions">
+              <a href="${m.fichier_url}" target="_blank" class="btn btn-sm" style="background:rgba(255,255,255,0.15);color:#fff;border:1px solid rgba(255,255,255,0.3)">📄 Lire le PDF</a>
+            </div>
+          </div>
+
+          <div class="grid-2" style="align-items:start">
+            <div class="card">
+              <div class="card-header"><h3 class="card-title">📝 Résumé</h3></div>
+              <p style="color:var(--noir);line-height:1.7">${m.resume || 'Non fourni.'}</p>
+              ${m.mots_cles ? `<div style="margin-top:12px;display:flex;gap:6px;flex-wrap:wrap">
+                ${m.mots_cles.split(',').map(k=>`<span class="badge badge-info">${k.trim()}</span>`).join('')}
+              </div>` : ''}
+            </div>
+
+            <div class="card">
+              <div class="card-header"><h3 class="card-title">✅ Décision de conformité</h3></div>
+
+              <div class="form-group">
+                <label class="form-label">Remarques / Observations</label>
+                <textarea class="form-control" id="remarques" rows="5" placeholder="Vos remarques sur ce mémoire (optionnel)…"></textarea>
+              </div>
+
+              <div style="display:flex;gap:12px;margin-top:8px">
+                <button class="btn btn-primary" style="flex:1;justify-content:center" onclick="valider()">
+                  ✅ Valider le mémoire
+                </button>
+                <button class="btn btn-danger" style="flex:1;justify-content:center" onclick="rejeter()">
+                  ❌ Rejeter
+                </button>
+              </div>
+              <p style="font-size:0.8rem;color:var(--gris-texte);margin-top:10px;text-align:center">
+                L'auteur sera notifié par email de votre décision.
+              </p>
+            </div>
+          </div>
+        `;
+      } catch(e) {
+        c.innerHTML = '<div class="alert alert-error">Erreur de chargement.</div>';
+      }
+    }
+
+    async function valider() {
+      if (!confirm('Confirmer la validation de ce mémoire ?')) return;
+      const remarques = document.getElementById('remarques')?.value || '';
+      try {
+        const res = await Api.put(`/soumissions/${id}/valider`, { remarques });
+        if (res) {
+          showAlert('✅ Mémoire validé ! L\'auteur a été notifié.', 'success');
+          setTimeout(() => window.location.href = 'memoires-en-attente.html', 2000);
+        } else { showAlert('Erreur lors de la validation.'); }
+      } catch(e) { showAlert('Erreur réseau.'); }
+    }
+
+    async function rejeter() {
+      if (!confirm('Rejeter ce mémoire ? L\'auteur sera notifié.')) return;
+      const remarques = document.getElementById('remarques')?.value || '';
+      try {
+        const res = await Api.put(`/soumissions/${id}/rejeter`, { remarques });
+        if (res) {
+          showAlert('Mémoire rejeté. Notification envoyée.', 'success');
+          setTimeout(() => window.location.href = 'memoires-en-attente.html', 2000);
+        } else { showAlert('Erreur lors du rejet.'); }
+      } catch(e) { showAlert('Erreur réseau.'); }
+    }
+
+    loadMemoire();
+  </script>
+</body>
+</html>

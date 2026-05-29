@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mémoires en attente — UATM</title>
+  <link rel="stylesheet" href="../../css/global.css"/>
+  <link rel="stylesheet" href="../../css/components.css"/>
+  <link rel="stylesheet" href="../../css/pages/dashboard.css"/>
+</head>
+<body class="dashboard-body">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <img src="../../assets/logo.png" alt="UATM"/>
+      <div class="brand-text">UATM <span>Gestion des Mémoires</span></div>
+    </div>
+    <div class="navbar-user">
+      <span class="badge badge-danger">Professeur</span>
+      <strong class="user-name" id="user-name">—</strong>
+    </div>
+  </nav>
+
+  <div class="layout-with-sidebar">
+    <aside class="sidebar">
+      <div class="sidebar-section-title">Navigation</div>
+      <a href="dashboard.html"><span class="icon">🏠</span> Tableau de bord</a>
+      <a href="memoires-en-attente.html" class="active"><span class="icon">⏳</span> Mémoires en attente</a>
+      <a href="valider-memoire.html"><span class="icon">✅</span> Valider conformité</a>
+      <div class="sidebar-section-title">Bibliothèque</div>
+      <a href="../../pages/etudiant/recherche.html"><span class="icon">🔍</span> Rechercher</a>
+      <div class="sidebar-logout">
+        <button onclick="Auth.logout()"><span>🚪</span> Déconnexion</button>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <div class="page-header">
+        <h1>⏳ Mémoires en attente de validation</h1>
+        <p>Examinez les mémoires soumis par les diplomés et validez leur conformité.</p>
+      </div>
+
+      <div id="alert-box" style="display:none"></div>
+
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Titre</th>
+              <th>Auteur</th>
+              <th>Domaine</th>
+              <th>Date de soumission</th>
+              <th>Fichier</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="table-body">
+            <tr>
+              <td colspan="6" style="text-align:center;padding:32px;color:var(--gris-texte)">Chargement…</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </main>
+  </div>
+
+  <footer class="footer">© 2025 <span>UATM</span> — Système de Gestion des Mémoires</footer>
+
+  <script src="../../js/auth.js"></script>
+  <script src="../../js/api.js"></script>
+  <script src="../../js/router.js"></script>
+  <script src="../../js/pages/valider.js"></script>
+  <script>
+    Router.guard('professeur');
+    const user = Auth.getUser();
+    if (user) document.getElementById('user-name').textContent = user.nom || user.email;
+
+    async function loadSoumissions() {
+      const tbody = document.getElementById('table-body');
+      try {
+        const data = await Api.get('/soumissions?statut=attente');
+        if (!data || !data.length) {
+          tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:32px;color:var(--gris-texte)">✅ Aucune soumission en attente.</td></tr>';
+          return;
+        }
+        tbody.innerHTML = data.map(s => `
+          <tr>
+            <td><strong>${s.titre}</strong></td>
+            <td>${s.auteur}</td>
+            <td><span class="badge badge-info">${s.domaine}</span></td>
+            <td>${s.date_soumission}</td>
+            <td><a href="${s.fichier_url}" target="_blank" class="btn btn-ghost btn-sm">📄 PDF</a></td>
+            <td style="display:flex;gap:8px">
+              <a href="valider-memoire.html?id=${s.id}" class="btn btn-primary btn-sm">✅ Valider</a>
+              <button onclick="rejeter(${s.id})" class="btn btn-danger btn-sm">❌ Rejeter</button>
+            </td>
+          </tr>`).join('');
+      } catch(e) {
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:32px;color:var(--rouge)">Erreur de chargement.</td></tr>';
+      }
+    }
+
+    async function rejeter(id) {
+      if (!confirm('Rejeter ce mémoire ? L\'auteur sera notifié par email.')) return;
+      try {
+        const res = await Api.put(`/soumissions/${id}/rejeter`, {});
+        if (res) { showAlert('Mémoire rejeté. Notification envoyée.', 'success'); loadSoumissions(); }
+      } catch(e) { showAlert('Erreur lors du rejet.'); }
+    }
+
+    function showAlert(msg, type='error') {
+      const b = document.getElementById('alert-box');
+      b.className=`alert alert-${type}`; b.textContent=msg; b.style.display='flex';
+      setTimeout(()=>b.style.display='none', 5000);
+    }
+
+    loadSoumissions();
+  </script>
+</body>
+</html>

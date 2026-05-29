@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Créer un compte — UATM</title>
+  <link rel="stylesheet" href="../../css/global.css"/>
+  <link rel="stylesheet" href="../../css/components.css"/>
+  <link rel="stylesheet" href="../../css/pages/dashboard.css"/>
+</head>
+<body class="dashboard-body">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <img src="../../assets/logo.png" alt="UATM"/>
+      <div class="brand-text">UATM <span>Gestion des Mémoires</span></div>
+    </div>
+    <div class="navbar-user">
+      <span class="badge badge-info">Informaticien</span>
+      <strong class="user-name" id="user-name">—</strong>
+    </div>
+  </nav>
+
+  <div class="layout-with-sidebar">
+    <aside class="sidebar">
+      <div class="sidebar-section-title">Navigation</div>
+      <a href="dashboard.html"><span class="icon">🏠</span> Tableau de bord</a>
+      <a href="creer-compte.html" class="active"><span class="icon">👤</span> Créer un compte</a>
+      <a href="upload-memoire.html"><span class="icon">📤</span> Uploader un mémoire</a>
+      <a href="upload-multiple.html"><span class="icon">📦</span> Upload multiple</a>
+      <div class="sidebar-section-title">Bibliothèque</div>
+      <a href="../../pages/etudiant/recherche.html"><span class="icon">🔍</span> Rechercher</a>
+      <a href="../../pages/etudiant/consulter-memoire.html"><span class="icon">📖</span> Consulter</a>
+      <div class="sidebar-logout">
+        <button onclick="Auth.logout()"><span>🚪</span> Déconnexion</button>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <div class="page-header">
+        <h1>👤 Créer un compte utilisateur</h1>
+        <p>Créez un compte pour un nouvel utilisateur de la plateforme.</p>
+      </div>
+
+      <div id="alert-box" style="display:none"></div>
+
+      <div class="grid-2" style="align-items:start">
+
+        <!-- Formulaire -->
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">📋 Informations personnelles</h3>
+          </div>
+
+          <div class="grid-2" style="gap:12px">
+            <div class="form-group">
+              <label class="form-label">Prénom *</label>
+              <input class="form-control" type="text" id="prenom" placeholder="Jean"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Nom *</label>
+              <input class="form-control" type="text" id="nom" placeholder="Dupont"/>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Adresse email *</label>
+            <input class="form-control" type="email" id="email" placeholder="jean.dupont@uatm.edu"/>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Rôle *</label>
+            <select class="form-control" id="role" onchange="onRoleChange()">
+              <option value="">— Sélectionner un rôle —</option>
+              <option value="etudiant">Étudiant Consultant</option>
+              <option value="diplome">Diplomé</option>
+              <option value="professeur">Professeur (Maître)</option>
+              <option value="informaticien">Informaticien</option>
+            </select>
+          </div>
+
+          <!-- Champ conditionnel : filière pour étudiant/diplomé -->
+          <div class="form-group" id="filiere-group" style="display:none">
+            <label class="form-label">Filière / Département</label>
+            <select class="form-control" id="filiere">
+              <option value="">— Sélectionner —</option>
+              <option>Informatique</option>
+              <option>Génie Civil</option>
+              <option>Management</option>
+              <option>Droit</option>
+              <option>Sciences</option>
+            </select>
+          </div>
+
+          <!-- Champ conditionnel : grade pour professeur -->
+          <div class="form-group" id="grade-group" style="display:none">
+            <label class="form-label">Grade / Titre</label>
+            <input class="form-control" type="text" id="grade" placeholder="Ex: Maître de conférences"/>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Téléphone</label>
+            <input class="form-control" type="tel" id="telephone" placeholder="+229 XX XX XX XX"/>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Mot de passe provisoire *</label>
+            <div style="position:relative">
+              <input class="form-control" type="password" id="password" placeholder="Minimum 8 caractères"/>
+              <button onclick="genPassword()" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:0.8rem;color:var(--bleu);font-weight:600">Générer</button>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label style="display:flex;align-items:center;gap:8px;cursor:pointer">
+              <input type="checkbox" id="send-email" checked style="width:16px;height:16px;accent-color:var(--bleu)"/>
+              <span style="font-size:0.9rem;color:var(--noir)">Envoyer les identifiants par email</span>
+            </label>
+          </div>
+
+          <div style="display:flex;gap:10px;margin-top:8px">
+            <button class="btn btn-primary" onclick="creerCompte()" id="submit-btn" style="flex:1;justify-content:center">
+              👤 Créer le compte
+            </button>
+            <a href="dashboard.html" class="btn btn-ghost">Annuler</a>
+          </div>
+        </div>
+
+        <!-- Panneau droit : liste utilisateurs récents -->
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">👥 Comptes récents</h3>
+            <span class="badge badge-info" id="user-count">—</span>
+          </div>
+          <div id="users-list" class="recent-list">
+            <p style="color:var(--gris-texte);text-align:center;padding:20px">Chargement…</p>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <footer class="footer">© 2025 <span>UATM</span> — Système de Gestion des Mémoires</footer>
+
+  <script src="../../js/auth.js"></script>
+  <script src="../../js/api.js"></script>
+  <script src="../../js/router.js"></script>
+  <script>
+    Router.guard('informaticien');
+    const user = Auth.getUser();
+    if (user) document.getElementById('user-name').textContent = user.nom || user.email;
+
+    function onRoleChange() {
+      const role = document.getElementById('role').value;
+      document.getElementById('filiere-group').style.display = ['etudiant','diplome'].includes(role) ? '' : 'none';
+      document.getElementById('grade-group').style.display   = role === 'professeur' ? '' : 'none';
+    }
+
+    function genPassword() {
+      const chars = 'ABCDEFGHJKMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789@#!';
+      let pwd = '';
+      for (let i = 0; i < 10; i++) pwd += chars[Math.floor(Math.random() * chars.length)];
+      document.getElementById('password').value = pwd;
+      document.getElementById('password').type  = 'text';
+    }
+
+    function showAlert(msg, type='error') {
+      const b = document.getElementById('alert-box');
+      b.className=`alert alert-${type}`; b.textContent=msg; b.style.display='flex';
+      if (type === 'success') setTimeout(()=>b.style.display='none', 5000);
+    }
+
+    async function creerCompte() {
+      const prenom   = document.getElementById('prenom').value.trim();
+      const nom      = document.getElementById('nom').value.trim();
+      const email    = document.getElementById('email').value.trim();
+      const role     = document.getElementById('role').value;
+      const password = document.getElementById('password').value;
+
+      if (!prenom || !nom || !email || !role || !password) {
+        showAlert('Veuillez remplir tous les champs obligatoires (*).'); return;
+      }
+      if (password.length < 8) {
+        showAlert('Le mot de passe doit contenir au moins 8 caractères.'); return;
+      }
+
+      const btn = document.getElementById('submit-btn');
+      btn.disabled = true; btn.textContent = 'Création en cours…';
+
+      try {
+        const payload = {
+          prenom, nom, email, role, password,
+          filiere:    document.getElementById('filiere')?.value   || '',
+          grade:      document.getElementById('grade')?.value     || '',
+          telephone:  document.getElementById('telephone').value  || '',
+          send_email: document.getElementById('send-email').checked
+        };
+
+        const res = await Api.post('/utilisateurs', payload);
+        if (res && res.id) {
+          showAlert(`✅ Compte créé pour ${prenom} ${nom}${payload.send_email ? ' · Email envoyé' : ''}.`, 'success');
+          // Reset formulaire
+          ['prenom','nom','email','password','telephone','grade'].forEach(id => {
+            const el = document.getElementById(id); if(el) el.value = '';
+          });
+          document.getElementById('role').value    = '';
+          document.getElementById('filiere').value = '';
+          document.getElementById('filiere-group').style.display = 'none';
+          document.getElementById('grade-group').style.display   = 'none';
+          loadUsers();
+        } else {
+          showAlert(res?.message || 'Erreur lors de la création du compte.');
+        }
+      } catch(e) {
+        showAlert('Erreur réseau. Réessayez.');
+      } finally {
+        btn.disabled = false; btn.textContent = '👤 Créer le compte';
+      }
+    }
+
+    const roleLabels = { informaticien:'Informaticien', etudiant:'Étudiant', diplome:'Diplomé', professeur:'Professeur' };
+    const roleBadges = { informaticien:'badge-info', etudiant:'badge-success', diplome:'badge-warning', professeur:'badge-danger' };
+
+    async function loadUsers() {
+      const list = document.getElementById('users-list');
+      try {
+        const data = await Api.get('/utilisateurs?limit=8&sort=recent');
+        if (data && data.length) {
+          document.getElementById('user-count').textContent = data.length + ' récents';
+          list.innerHTML = data.map(u => `
+            <div class="recent-item">
+              <div class="recent-icon">👤</div>
+              <div class="recent-info">
+                <strong>${u.prenom} ${u.nom}</strong>
+                <span>${u.email}</span>
+              </div>
+              <span class="badge ${roleBadges[u.role] || 'badge-info'}">${roleLabels[u.role] || u.role}</span>
+            </div>`).join('');
+        } else {
+          list.innerHTML = '<p style="color:var(--gris-texte);text-align:center;padding:20px">Aucun utilisateur.</p>';
+        }
+      } catch(e) {
+        list.innerHTML = '<p style="color:var(--gris-texte);text-align:center;padding:20px">Non disponible.</p>';
+      }
+    }
+
+    loadUsers();
+  </script>
+</body>
+</html>
