@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mon profil — UATM</title>
+  <link rel="stylesheet" href="../css/global.css"/>
+  <link rel="stylesheet" href="../css/components.css"/>
+  <link rel="stylesheet" href="../css/pages/dashboard.css"/>
+  <style>
+    .avatar {
+      width: 88px; height: 88px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--bleu), var(--bleu-fonce));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2rem; color: var(--blanc); font-family: var(--font-titre);
+      font-weight: 700; flex-shrink: 0;
+      box-shadow: 0 4px 16px rgba(26,77,179,0.3);
+    }
+    .profil-header {
+      display: flex; align-items: center; gap: 24px;
+      background: var(--blanc); border-radius: var(--radius-lg);
+      padding: 28px; box-shadow: var(--ombre);
+      border: 1px solid var(--bleu-clair); margin-bottom: 24px;
+    }
+    .profil-info h2 { font-size: 1.4rem; margin-bottom: 4px; }
+    .profil-info p  { color: var(--gris-texte); font-size: 0.9rem; }
+    .profil-info .meta { display: flex; gap: 12px; margin-top: 8px; flex-wrap: wrap; }
+    .password-strength {
+      height: 6px; border-radius: 3px; margin-top: 6px;
+      background: var(--gris-moyen); overflow: hidden;
+    }
+    .password-strength-fill {
+      height: 100%; border-radius: 3px; transition: all 0.3s;
+      width: 0%;
+    }
+    .strength-label { font-size: 0.75rem; margin-top: 3px; font-weight: 600; }
+  </style>
+</head>
+<body class="dashboard-body">
+
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <img src="../assets/logo.png" alt="UATM"/>
+      <div class="brand-text">UATM <span>Gestion des Mémoires</span></div>
+    </div>
+    <div class="navbar-user">
+      <span class="badge badge-info" id="role-badge">—</span>
+      <strong class="user-name" id="user-name">—</strong>
+    </div>
+  </nav>
+
+  <div class="layout-with-sidebar">
+    <aside class="sidebar" id="sidebar"></aside>
+
+    <main class="main-content">
+
+      <!-- En-tête profil -->
+      <div class="profil-header">
+        <div class="avatar" id="avatar-initiales">—</div>
+        <div class="profil-info">
+          <h2 id="profil-nom">—</h2>
+          <p id="profil-email">—</p>
+          <div class="meta">
+            <span class="badge badge-info" id="profil-role">—</span>
+            <span style="font-size:0.82rem;color:var(--gris-texte)" id="profil-filiere"></span>
+          </div>
+        </div>
+      </div>
+
+      <div id="alert-box" style="display:none"></div>
+
+      <div class="grid-2" style="align-items:start">
+
+        <!-- Modifier informations -->
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">✏️ Mes informations</h3>
+          </div>
+
+          <div class="grid-2" style="gap:12px">
+            <div class="form-group">
+              <label class="form-label">Prénom</label>
+              <input class="form-control" type="text" id="edit-prenom"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Nom</label>
+              <input class="form-control" type="text" id="edit-nom"/>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Email</label>
+            <input class="form-control" type="email" id="edit-email"/>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Téléphone</label>
+            <input class="form-control" type="tel" id="edit-telephone" placeholder="+229 XX XX XX XX"/>
+          </div>
+
+          <button class="btn btn-primary" onclick="sauvegarderProfil()" id="save-btn">
+            💾 Enregistrer les modifications
+          </button>
+        </div>
+
+        <!-- Changer mot de passe -->
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">🔒 Changer le mot de passe</h3>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Mot de passe actuel</label>
+            <input class="form-control" type="password" id="pwd-actuel" placeholder="••••••••"/>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Nouveau mot de passe</label>
+            <input class="form-control" type="password" id="pwd-nouveau" placeholder="Minimum 8 caractères" oninput="evaluerForce(this.value)"/>
+            <div class="password-strength">
+              <div class="password-strength-fill" id="pwd-strength-bar"></div>
+            </div>
+            <div class="strength-label" id="pwd-strength-label"></div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Confirmer le nouveau mot de passe</label>
+            <input class="form-control" type="password" id="pwd-confirm" placeholder="••••••••"/>
+          </div>
+
+          <button class="btn btn-outline" onclick="changerMotDePasse()" id="pwd-btn">
+            🔒 Mettre à jour le mot de passe
+          </button>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <footer class="footer">© 2025 <span>UATM</span> — Système de Gestion des Mémoires</footer>
+
+  <script src="../js/auth.js"></script>
+  <script src="../js/api.js"></script>
+  <script src="../js/router.js"></script>
+  <script>
+    Router.guard();
+    const user = Auth.getUser();
+    const role = Auth.getRole();
+
+    const roleLabels = { informaticien:'Informaticien', etudiant:'Étudiant', diplome:'Diplomé', professeur:'Professeur' };
+
+    if (user) {
+      document.getElementById('user-name').textContent     = user.nom || user.email;
+      document.getElementById('role-badge').textContent    = roleLabels[role] || role;
+      document.getElementById('profil-nom').textContent    = `${user.prenom || ''} ${user.nom || ''}`.trim();
+      document.getElementById('profil-email').textContent  = user.email || '—';
+      document.getElementById('profil-role').textContent   = roleLabels[role] || role;
+      document.getElementById('edit-prenom').value         = user.prenom   || '';
+      document.getElementById('edit-nom').value            = user.nom      || '';
+      document.getElementById('edit-email').value          = user.email    || '';
+      document.getElementById('edit-telephone').value      = user.telephone || '';
+      if (user.filiere) document.getElementById('profil-filiere').textContent = `📁 ${user.filiere}`;
+
+      // Initiales dans l'avatar
+      const initiales = ((user.prenom?.[0] || '') + (user.nom?.[0] || '')).toUpperCase() || '?';
+      document.getElementById('avatar-initiales').textContent = initiales;
+    }
+
+    // Sidebar dynamique
+    const sidebars = {
+      informaticien: `<div class="sidebar-section-title">Navigation</div>
+        <a href="informaticien/dashboard.html"><span class="icon">🏠</span> Tableau de bord</a>
+        <a href="informaticien/creer-compte.html"><span class="icon">👤</span> Créer un compte</a>
+        <a href="informaticien/upload-memoire.html"><span class="icon">📤</span> Uploader</a>`,
+      etudiant: `<div class="sidebar-section-title">Navigation</div>
+        <a href="etudiant/dashboard.html"><span class="icon">🏠</span> Tableau de bord</a>
+        <a href="etudiant/recherche.html"><span class="icon">🔍</span> Rechercher</a>`,
+      diplome: `<div class="sidebar-section-title">Navigation</div>
+        <a href="diplome/dashboard.html"><span class="icon">🏠</span> Tableau de bord</a>
+        <a href="diplome/soumettre-memoire.html"><span class="icon">📝</span> Soumettre</a>
+        <a href="diplome/notifications.html"><span class="icon">🔔</span> Notifications</a>`,
+      professeur: `<div class="sidebar-section-title">Navigation</div>
+        <a href="professeur/dashboard.html"><span class="icon">🏠</span> Tableau de bord</a>
+        <a href="professeur/memoires-en-attente.html"><span class="icon">⏳</span> En attente</a>
+        <a href="professeur/notifications.html"><span class="icon">🔔</span> Notifications</a>`
+    };
+    const logout = `<div class="sidebar-section-title">Compte</div>
+      <a href="../pages/profil.html" class="active"><span class="icon">👤</span> Mon profil</a>
+      <div class="sidebar-logout"><button onclick="Auth.logout()"><span>🚪</span> Déconnexion</button></div>`;
+    document.getElementById('sidebar').innerHTML = (sidebars[role] || '') + logout;
+
+    function showAlert(msg, type='error') {
+      const b = document.getElementById('alert-box');
+      b.className=`alert alert-${type}`; b.textContent=msg; b.style.display='flex';
+      if (type==='success') setTimeout(()=>b.style.display='none', 4000);
+    }
+
+    async function sauvegarderProfil() {
+      const btn = document.getElementById('save-btn');
+      btn.disabled = true; btn.textContent = 'Enregistrement…';
+      try {
+        const payload = {
+          prenom:    document.getElementById('edit-prenom').value.trim(),
+          nom:       document.getElementById('edit-nom').value.trim(),
+          email:     document.getElementById('edit-email').value.trim(),
+          telephone: document.getElementById('edit-telephone').value.trim()
+        };
+        const res = await Api.put('/profil', payload);
+        if (res) {
+          // Mettre à jour le localStorage
+          const updated = { ...Auth.getUser(), ...payload };
+          localStorage.setItem('user', JSON.stringify(updated));
+          showAlert('✅ Profil mis à jour avec succès.', 'success');
+          document.getElementById('profil-nom').textContent = `${payload.prenom} ${payload.nom}`;
+          document.getElementById('user-name').textContent  = payload.nom;
+          const initiales = ((payload.prenom?.[0]||'')+(payload.nom?.[0]||'')).toUpperCase();
+          document.getElementById('avatar-initiales').textContent = initiales;
+        } else {
+          showAlert(res?.message || 'Erreur lors de la mise à jour.');
+        }
+      } catch(e) { showAlert('Erreur réseau. Réessayez.'); }
+      finally { btn.disabled=false; btn.textContent='💾 Enregistrer les modifications'; }
+    }
+
+    function evaluerForce(pwd) {
+      const bar   = document.getElementById('pwd-strength-bar');
+      const label = document.getElementById('pwd-strength-label');
+      let score = 0;
+      if (pwd.length >= 8)  score++;
+      if (/[A-Z]/.test(pwd)) score++;
+      if (/[0-9]/.test(pwd)) score++;
+      if (/[^A-Za-z0-9]/.test(pwd)) score++;
+      const configs = [
+        { w:'0%',   color:'',               text:'' },
+        { w:'25%',  color:'var(--rouge)',    text:'Faible' },
+        { w:'50%',  color:'#f57f17',        text:'Moyen' },
+        { w:'75%',  color:'#1976d2',        text:'Fort' },
+        { w:'100%', color:'#2e7d32',        text:'Très fort' }
+      ];
+      const c = configs[score] || configs[0];
+      bar.style.width = c.w; bar.style.background = c.color;
+      label.textContent = c.text; label.style.color = c.color;
+    }
+
+    async function changerMotDePasse() {
+      const actuel  = document.getElementById('pwd-actuel').value;
+      const nouveau = document.getElementById('pwd-nouveau').value;
+      const confirm = document.getElementById('pwd-confirm').value;
+
+      if (!actuel || !nouveau || !confirm) { showAlert('Remplissez tous les champs du mot de passe.'); return; }
+      if (nouveau.length < 8) { showAlert('Le nouveau mot de passe doit faire au moins 8 caractères.'); return; }
+      if (nouveau !== confirm) { showAlert('Les mots de passe ne correspondent pas.'); return; }
+
+      const btn = document.getElementById('pwd-btn');
+      btn.disabled = true; btn.textContent = 'Mise à jour…';
+      try {
+        const res = await Api.put('/profil/password', { ancien: actuel, nouveau });
+        if (res && res.success) {
+          showAlert('✅ Mot de passe mis à jour.', 'success');
+          ['pwd-actuel','pwd-nouveau','pwd-confirm'].forEach(id => document.getElementById(id).value='');
+          document.getElementById('pwd-strength-bar').style.width='0%';
+          document.getElementById('pwd-strength-label').textContent='';
+        } else {
+          showAlert(res?.message || 'Mot de passe actuel incorrect.');
+        }
+      } catch(e) { showAlert('Erreur réseau. Réessayez.'); }
+      finally { btn.disabled=false; btn.textContent='🔒 Mettre à jour le mot de passe'; }
+    }
+  </script>
+</body>
+</html>
