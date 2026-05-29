@@ -5,39 +5,29 @@
 // Confirmer et valider rapidement depuis la liste
 async function validerRapide(id) {
   if (!confirm('Valider ce mémoire ? L\'auteur sera notifié par email.')) return;
-  try {
-    const res = await Api.put(`/soumissions/${id}/valider`, {});
-    if (res) {
-      showToast('✅ Mémoire validé !', 'success');
-      // Retirer la ligne du tableau sans recharger
-      const row = document.getElementById(`row-${id}`);
-      if (row) {
-        row.style.transition = 'opacity 0.4s';
-        row.style.opacity = '0';
-        setTimeout(() => row.remove(), 400);
-      }
-    }
-  } catch(e) {
-    showToast('Erreur lors de la validation.', 'error');
+  
+  // Simulation succès
+  showToast('Mémoire validé (simulation) !', 'success');
+  // Retirer la ligne du tableau sans recharger
+  const row = document.getElementById(`row-${id}`);
+  if (row) {
+    row.style.transition = 'opacity 0.4s';
+    row.style.opacity = '0';
+    setTimeout(() => row.remove(), 400);
   }
 }
 
 // Rejeter rapidement depuis la liste
 async function rejeterRapide(id) {
   if (!confirm('Rejeter ce mémoire ? L\'auteur sera notifié par email.')) return;
-  try {
-    const res = await Api.put(`/soumissions/${id}/rejeter`, {});
-    if (res) {
-      showToast('Mémoire rejeté.', 'success');
-      const row = document.getElementById(`row-${id}`);
-      if (row) {
-        row.style.transition = 'opacity 0.4s';
-        row.style.opacity = '0';
-        setTimeout(() => row.remove(), 400);
-      }
-    }
-  } catch(e) {
-    showToast('Erreur lors du rejet.', 'error');
+  
+  // Simulation succès
+  showToast('Mémoire rejeté (simulation).', 'success');
+  const row = document.getElementById(`row-${id}`);
+  if (row) {
+    row.style.transition = 'opacity 0.4s';
+    row.style.opacity = '0';
+    setTimeout(() => row.remove(), 400);
   }
 }
 

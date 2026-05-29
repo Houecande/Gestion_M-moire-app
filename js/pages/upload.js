@@ -89,31 +89,17 @@ async function submitMemoire() {
   }, 200);
 
   try {
-    const formData = new FormData();
-    formData.append('fichier',    selectedFile);
-    formData.append('titre',      titre);
-    formData.append('auteur',     auteur);
-    formData.append('annee',      annee);
-    formData.append('domaine',    domaine);
-    formData.append('directeur',  document.getElementById('directeur')?.value || '');
-    formData.append('resume',     document.getElementById('resume')?.value    || '');
-    formData.append('mots_cles',  document.getElementById('mots_cles')?.value || '');
-    formData.append('statut',     document.getElementById('statut')?.value    || 'publie');
-
-    const res = await Api.postFile('/memoires', formData);
+    // Simulation d'un délai pour l'upload
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    
     clearInterval(interval);
     fill.style.width = '100%'; label.textContent = '100%';
 
-    if (res && res.id) {
-      showAlert('✅ Mémoire uploadé avec succès !', 'success');
-      setTimeout(() => window.location.href = 'dashboard.html', 1500);
-    } else {
-      showAlert(res?.message || 'Erreur lors de l\'upload.');
-      btn.disabled = false; btn.textContent = '📤 Publier le mémoire';
-    }
+    showAlert('Mémoire uploadé avec succès (simulation) !', 'success');
+    setTimeout(() => window.location.href = 'dashboard.html', 1500);
   } catch(e) {
     clearInterval(interval);
-    showAlert('Erreur réseau. Réessayez.');
-    btn.disabled = false; btn.textContent = '📤 Publier le mémoire';
+    showAlert('Erreur lors de la soumission.');
+    btn.disabled = false; btn.textContent = 'Publier le mémoire';
   }
 }

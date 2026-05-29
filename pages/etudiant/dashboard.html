@@ -1,123 +1,112 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Dashboard — Étudiant Consultant</title>
-  <link rel="stylesheet" href="../../css/global.css"/>
-  <link rel="stylesheet" href="../../css/components.css"/>
-  <link rel="stylesheet" href="../../css/pages/dashboard.css"/>
+ <meta charset="UTF-8"/>
+ <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+ <title>Dashboard Étudiant Consultant</title>
+ <link rel="stylesheet" href="../../css/global.css"/>
+ <link rel="stylesheet" href="../../css/components.css"/>
+ <link rel="stylesheet" href="../../css/pages/dashboard.css"/>
 </head>
 <body class="dashboard-body">
-  <nav class="navbar">
-    <div class="navbar-brand">
-      <img src="../../assets/logo.png" alt="UATM"/>
-      <div class="brand-text">UATM <span>Gestion des Mémoires</span></div>
-    </div>
-    <div class="navbar-user">
-      <span class="badge badge-success">Étudiant</span>
-      <strong class="user-name" id="user-name">—</strong>
-    </div>
-  </nav>
-
-  <div class="layout-with-sidebar">
-    <aside class="sidebar">
-      <div class="sidebar-section-title">Navigation</div>
-      <a href="dashboard.html" class="active"><span class="icon">🏠</span> Tableau de bord</a>
-      <a href="recherche.html"><span class="icon">🔍</span> Rechercher</a>
-      <a href="consulter-memoire.html"><span class="icon">📖</span> Consulter</a>
-      <div class="sidebar-logout">
-        <button onclick="Auth.logout()"><span>🚪</span> Déconnexion</button>
-      </div>
-    </aside>
-
-    <main class="main-content">
-      <div class="welcome-banner">
-        <div>
-          <h2>Bienvenue, <span id="welcome-name">—</span> 🎓</h2>
-          <p>Consultez, commentez et likez les mémoires de la bibliothèque.</p>
-          <div class="quick-actions">
-            <a href="recherche.html" class="quick-btn">🔍 Rechercher</a>
-            <a href="consulter-memoire.html" class="quick-btn">📖 Consulter</a>
-          </div>
-        </div>
-        <div class="welcome-icon">📚</div>
-      </div>
-
-      <div class="stats-grid">
-        <div class="card stat-card">
-          <div class="stat-icon">📚</div>
-          <div class="stat-number" id="stat-total">—</div>
-          <div class="stat-label">Mémoires disponibles</div>
-        </div>
-        <div class="card stat-card">
-          <div class="stat-icon">❤️</div>
-          <div class="stat-number" id="stat-likes">—</div>
-          <div class="stat-label">Mes likes</div>
-        </div>
-        <div class="card stat-card">
-          <div class="stat-icon">💬</div>
-          <div class="stat-number" id="stat-comments">—</div>
-          <div class="stat-label">Mes commentaires</div>
-        </div>
-        <div class="card stat-card">
-          <div class="stat-icon">👁</div>
-          <div class="stat-number" id="stat-vus">—</div>
-          <div class="stat-label">Consultés récemment</div>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-header">
-          <h3 class="card-title">🔥 Mémoires populaires</h3>
-          <a href="recherche.html" class="btn btn-ghost btn-sm">Voir tout</a>
-        </div>
-        <div id="popular-list" class="recent-list">
-          <p style="color:var(--gris-texte);text-align:center;padding:20px">Chargement…</p>
-        </div>
-      </div>
-    </main>
-  </div>
-
-  <footer class="footer">© 2025 <span>UATM</span> — Système de Gestion des Mémoires</footer>
-
-  <script src="../../js/auth.js"></script>
-  <script src="../../js/api.js"></script>
-  <script src="../../js/router.js"></script>
-  <script>
-    Router.guard('etudiant');
-    const user = Auth.getUser();
-    if (user) {
-      document.getElementById('user-name').textContent    = user.nom || user.email;
-      document.getElementById('welcome-name').textContent = user.prenom || user.nom || 'Étudiant';
-    }
-    async function loadData() {
-      try {
-        const stats = await Api.get('/stats/etudiant');
-        if (stats) {
-          document.getElementById('stat-total').textContent    = stats.total    ?? '—';
-          document.getElementById('stat-likes').textContent    = stats.mes_likes ?? '—';
-          document.getElementById('stat-comments').textContent = stats.mes_commentaires ?? '—';
-          document.getElementById('stat-vus').textContent      = stats.vus      ?? '—';
-        }
-        const pop = await Api.get('/memoires?sort=likes&limit=5');
-        const list = document.getElementById('popular-list');
-        if (pop && pop.length) {
-          list.innerHTML = pop.map(m => `
-            <a href="consulter-memoire.html?id=${m.id}" class="recent-item" style="text-decoration:none">
-              <div class="recent-icon">📄</div>
-              <div class="recent-info">
-                <strong>${m.titre}</strong>
-                <span>${m.auteur} · ${m.domaine}</span>
-              </div>
-              <span class="recent-date">❤️ ${m.likes ?? 0}</span>
-            </a>`).join('');
-        } else {
-          list.innerHTML = '<p style="color:var(--gris-texte);text-align:center;padding:20px">Aucun mémoire.</p>';
-        }
-      } catch(e) {}
-    }
-    loadData();
-  </script>
+ <nav class="navbar">
+ <div class="navbar-brand">
+ <img src="../../assets/logo.png" alt="UATM"/>
+ <div class="brand-text">UATM <span>Gestion des Mémoires</span></div>
+ </div>
+ <div class="navbar-user">
+ <span class="badge badge-success">Étudiant</span>
+ <strong class="user-name" id="user-name"></strong>
+ </div>
+ </nav>
+ <div class="layout-with-sidebar">
+ <aside class="sidebar">
+ <div class="sidebar-section-title">Navigation</div>
+ <a href="dashboard.html" class="active"> Tableau de bord</a>
+ <a href="recherche.html"> Rechercher</a>
+ <a href="consulter-memoire.html"> Consulter</a>
+ <div class="sidebar-logout">
+ <button onclick="Auth.logout()"> Déconnexion</button>
+ </div>
+ </aside>
+ <main class="main-content">
+ <div class="welcome-banner">
+ <div>
+ <h2>Bienvenue, <span id="welcome-name"></span> </h2>
+ <p>Consultez, commentez et likez les mémoires de la bibliothèque.</p>
+ <div class="quick-actions">
+ <a href="recherche.html" class="quick-btn"> Rechercher</a>
+ <a href="consulter-memoire.html" class="quick-btn"> Consulter</a>
+ </div>
+ </div>
+ </div>
+ <div class="stats-grid">
+ <div class="card stat-card">
+ <div class="stat-number" id="stat-total"></div>
+ <div class="stat-label">Mémoires disponibles</div>
+ </div>
+ <div class="card stat-card">
+ <div class="stat-number" id="stat-likes"></div>
+ <div class="stat-label">Mes likes</div>
+ </div>
+ <div class="card stat-card">
+ <div class="stat-number" id="stat-comments"></div>
+ <div class="stat-label">Mes commentaires</div>
+ </div>
+ <div class="card stat-card">
+ <div class="stat-number" id="stat-vus"></div>
+ <div class="stat-label">Consultés récemment</div>
+ </div>
+ </div>
+ <div class="card">
+ <div class="card-header">
+ <h3 class="card-title"> Mémoires populaires</h3>
+ <a href="recherche.html" class="btn btn-ghost btn-sm">Voir tout</a>
+ </div>
+ <div id="popular-list" class="recent-list">
+ <p style="color:var(--gris-texte);text-align:center;padding:20px">Chargement</p>
+ </div>
+ </div>
+ </main>
+ </div>
+ <footer class="footer"> 2025 <span>UATM</span> Système de Gestion des Mémoires</footer>
+ <script src="../../js/auth.js"></script>
+ <script src="../../js/router.js"></script>
+ <script>
+ Router.guard('etudiant');
+ const user = Auth.getUser();
+ if (user) {
+ document.getElementById('user-name').textContent = user.nom || user.email;
+ document.getElementById('welcome-name').textContent = user.prenom || user.nom || 'Étudiant';
+ }
+ function loadData() {
+ const stats = { total: 1250, mes_likes: 12, mes_commentaires: 5, vus: 8 };
+ document.getElementById('stat-total').textContent = stats.total;
+ document.getElementById('stat-likes').textContent = stats.mes_likes;
+ document.getElementById('stat-comments').textContent = stats.mes_commentaires;
+ document.getElementById('stat-vus').textContent = stats.vus;
+ 
+ const pop = [
+ { id: 1, titre: "Système de recommandation e-commerce", auteur: "Koffi Mensah", domaine: "Informatique", likes: 45 },
+ { id: 2, titre: "Analyse sismique des bâtiments à Cotonou", auteur: "Sika Gnonlonfoun", domaine: "Génie Civil", likes: 38 },
+ { id: 3, titre: "Audit financier des PME au Bénin", auteur: "Pierre Houessou", domaine: "Management", likes: 32 }
+ ];
+ 
+ const list = document.getElementById('popular-list');
+ if (pop && pop.length) {
+ list.innerHTML = pop.map(m => `
+ <a href="consulter-memoire.html?id=${m.id}" class="recent-item" style="text-decoration:none">
+ <div class="recent-info">
+ <strong>${m.titre}</strong>
+ <span>${m.auteur} • ${m.domaine}</span>
+ </div>
+ <span class="recent-date">❤️ ${m.likes ?? 0}</span>
+ </a>`).join('');
+ } else {
+ list.innerHTML = '<p style="color:var(--gris-texte);text-align:center;padding:20px">Aucun mémoire populaire.</p>';
+ }
+ }
+ loadData();
+ </script>
 </body>
 </html>

@@ -1,124 +1,104 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>UATM Gsa Formation - Gestion des Mémoires</title>
-  <link rel="stylesheet" href="css/global.css"/>
-  <link rel="stylesheet" href="css/components.css"/>
-  <style>
-    .hero {
-      min-height: calc(100vh - 68px);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: linear-gradient(135deg, var(--bleu-fonce) 0%, var(--bleu) 60%, #2563c7 100%);
-      position: relative;
-      overflow: hidden;
-    }
-    .hero::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-    }
-    .hero-content { text-align: center; color: var(--blanc); position: relative; z-index: 1; padding: 40px 24px; }
-    .hero-logo { width: 110px; margin: 0 auto 20px; filter: drop-shadow(0 4px 16px rgba(0,0,0,0.3)); }
-    .hero-content h1 { font-size: 2.4rem; color: var(--blanc); margin-bottom: 10px; }
-    .hero-content h1 span { color: #f8c84a; }
-    .hero-content p { color: rgba(255,255,255,0.8); font-size: 1.05rem; max-width: 520px; margin: 0 auto 32px; }
-    .hero-divider { width: 60px; height: 3px; background: var(--rouge); margin: 16px auto; border-radius: 2px; }
-    .hero-actions { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
-    .btn-white { background: var(--blanc); color: var(--bleu); border-color: var(--blanc); }
-    .btn-white:hover { background: var(--bleu-clair); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.2); }
-    .btn-outline-white { background: transparent; color: var(--blanc); border: 2px solid rgba(255,255,255,0.6); }
-    .btn-outline-white:hover { background: rgba(255,255,255,0.12); border-color: var(--blanc); }
-
-    .features { padding: 64px 0; background: var(--gris); }
-    .features h2 { text-align: center; margin-bottom: 8px; }
-    .features .subtitle { text-align: center; color: var(--gris-texte); margin-bottom: 40px; }
-    .feature-icon { font-size: 2rem; margin-bottom: 12px; }
-    .feature-card { text-align: center; }
-    .feature-card h3 { font-size: 1rem; margin-bottom: 6px; }
-    .feature-card p { font-size: 0.88rem; }
-  </style>
+ <meta charset="UTF-8" />
+ <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+ <title>UATM Gsa Formation - Gestion des Mémoires</title>
+ <link rel="stylesheet" href="css/global.css"/>
+ <link rel="stylesheet" href="css/components.css"/>
+ <style>
+ .hero {
+   min-height: calc(100vh - 68px);
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   background: var(--bleu-fonce);
+   position: relative;
+ }
+ .hero-content { text-align: center; color: var(--blanc); position: relative; z-index: 1; padding: 40px 24px; } .hero-logo { width: 110px; margin: 0 auto 20px; filter: drop-shadow(0 4px 16px rgba(0,0,0,0.3)); }
+ .hero-content h1 { font-size: 2.4rem; color: var(--blanc); margin-bottom: 10px; }
+ .hero-content h1 span { color: #f8c84a; }
+ .hero-content p { color: rgba(255,255,255,0.8); font-size: 1.05rem; max-width: 520px; margin: 0 auto 32px; }
+ .hero-divider { width: 60px; height: 3px; background: var(--rouge); margin: 16px auto; border-radius: 2px; }
+ .hero-actions { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+ .btn-white { background: var(--blanc); color: var(--bleu); border-color: var(--blanc); }
+ .btn-white:hover { background: var(--bleu-clair); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.2); }
+ .btn-outline-white { background: transparent; color: var(--blanc); border: 2px solid rgba(255,255,255,0.6); }
+ .btn-outline-white:hover { background: rgba(255,255,255,0.12); border-color: var(--blanc); }
+ .features { padding: 64px 0; background: var(--gris); }
+ .features h2 { text-align: center; margin-bottom: 8px; }
+ .features .subtitle { text-align: center; color: var(--gris-texte); margin-bottom: 40px; }
+ .feature-icon { font-size: 2rem; margin-bottom: 12px; }
+ .feature-card { text-align: center; }
+ .feature-card h3 { font-size: 1rem; margin-bottom: 6px; }
+ .feature-card p { font-size: 0.88rem; }
+ </style>
 </head>
 <body>
-
-  <!-- NAVBAR -->
-  <nav class="navbar">
-    <div class="navbar-brand">
-      <img src="assets/logo.png" alt="UATM Logo"/>
-      <div class="brand-text">
-        UATM
-        <span>Gestion des Mémoires</span>
-      </div>
-    </div>
-    <a href="login.html" class="btn btn-primary btn-sm">Se connecter</a>
-  </nav>
-
-  <!-- HERO -->
-  <section class="hero">
-    <div class="hero-content">
-      <img src="assets/logo.png" alt="Logo" class="hero-logo"/>
-      <h1>Système de Gestion<br/>des <span>Mémoires</span></h1>
-      <div class="hero-divider"></div>
-      <p>Plateforme centralisée pour le dépôt, la consultation et la validation des mémoires de fin d'études.</p>
-      <div class="hero-actions">
-        <a href="login.html" class="btn btn-white btn-lg">📚 Accéder à la plateforme</a>
-        <a href="#fonctionnalites" class="btn btn-outline-white btn-lg">En savoir plus</a>
-      </div>
-    </div>
-  </section>
-
-  <!-- FONCTIONNALITÉS -->
-  <section class="features" id="fonctionnalites">
-    <div class="container">
-      <h2>Fonctionnalités</h2>
-      <p class="subtitle">Une plateforme adaptée à chaque acteur de l'institution</p>
-      <div class="grid-4">
-        <div class="card feature-card">
-          <div class="feature-icon">📤</div>
-          <h3>Dépôt de mémoires</h3>
-          <p>Soumission simple et rapide de vos travaux académiques en ligne.</p>
-        </div>
-        <div class="card feature-card">
-          <div class="feature-icon">🔍</div>
-          <h3>Recherche avancée</h3>
-          <p>Trouvez rapidement n'importe quel mémoire par titre, auteur ou domaine.</p>
-        </div>
-        <div class="card feature-card">
-          <div class="feature-icon">✅</div>
-          <h3>Validation</h3>
-          <p>Workflow de validation par les professeurs pour garantir la conformité.</p>
-        </div>
-        <div class="card feature-card">
-          <div class="feature-icon">🔔</div>
-          <h3>Notifications</h3>
-          <p>Recevez des alertes par email à chaque étape du processus.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- FOOTER -->
-  <footer class="footer">
-    © 2025 <span>UATM</span> — Système de Gestion des Mémoires Soutenus
-  </footer>
-
-  <script src="js/auth.js"></script>
-  <script>
-    // Si déjà connecté, rediriger vers le dashboard
-    if (Auth.isLoggedIn()) {
-      const role = Auth.getRole();
-      const routes = {
-        informaticien: 'pages/informaticien/dashboard.html',
-        etudiant:      'pages/etudiant/dashboard.html',
-        diplome:       'pages/diplome/dashboard.html',
-        professeur:    'pages/professeur/dashboard.html',
-      };
-      if (routes[role]) window.location.href = routes[role];
-    }
-  </script>
-</body>
+ <!-- NAVBAR -->
+ <nav class="navbar">
+ <div class="navbar-brand">
+ <img src="assets/logo.png" alt="UATM Logo"/>
+ <div class="brand-text">
+ UATM
+ <span>Gestion des Mémoires</span>
+ </div>
+ </div>
+ <a href="login.html" class="btn btn-primary btn-sm">Se connecter</a>
+ </nav>
+ <!-- HERO -->
+ <section class="hero">
+ <div class="hero-content">
+ <img src="assets/logo.png" alt="Logo" class="hero-logo"/>
+ <h1>Système de Gestion<br/>des <span>Mémoires</span></h1>
+ <div class="hero-divider"></div>
+ <p>Plateforme centralisée pour le dépôt, la consultation et la validation des mémoires de fin d'études.</p>
+ <div class="hero-actions">
+ <a href="login.html" class="btn btn-white btn-lg">Accéder à la plateforme</a>
+ <a href="#fonctionnalites" class="btn btn-outline-white btn-lg">En savoir plus</a>
+ </div>
+ </div>
+ </section>
+ <!-- FONCTIONNALITÉS -->
+ <section class="features" id="fonctionnalites">
+ <div class="container">
+ <h2>Fonctionnalités</h2>
+ <p class="subtitle">Une plateforme adaptée à chaque acteur de l'institution</p>
+ <div class="grid-4">
+ <div class="card feature-card">
+ <h3>Dépôt de mémoires</h3>
+ <p>Soumission simple et rapide de vos travaux académiques en ligne.</p>
+ </div>
+ <div class="card feature-card">
+ <h3>Recherche avancée</h3>
+ <p>Trouvez rapidement n'importe quel mémoire par titre, auteur ou domaine.</p>
+ </div>
+ <div class="card feature-card">
+ <h3>Validation</h3>
+ <p>Workflow de validation par les professeurs pour garantir la conformité.</p>
+ </div>
+ <div class="card feature-card">
+ <h3>Notifications</h3>
+ <p>Recevez des alertes par email à chaque étape du processus.</p>
+ </div>
+ </div>
+ </div>
+ </section>
+ <!-- FOOTER -->
+ <footer class="footer">
+ © 2026 <span>UATM</span> — Système de Gestion des Mémoires Soutenus
+ </footer>
+ <script src="js/auth.js"></script>
+ <script>
+   if (Auth.isLoggedIn()) {
+     const role = Auth.getRole();
+     const routes = {
+       informaticien: 'pages/informaticien/dashboard.html',
+       etudiant: 'pages/etudiant/dashboard.html',
+       diplome: 'pages/diplome/dashboard.html',
+       professeur: 'pages/professeur/dashboard.html',
+     };
+     if (routes[role]) window.location.href = routes[role];
+   }
+ </script></body>
 </html>

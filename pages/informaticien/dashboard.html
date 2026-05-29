@@ -1,222 +1,186 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Dashboard — Informaticien</title>
-  <link rel="stylesheet" href="../../css/global.css"/>
-  <link rel="stylesheet" href="../../css/components.css"/>
-  <link rel="stylesheet" href="../../css/pages/dashboard.css"/>
+ <meta charset="UTF-8"/>
+ <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+ <title>Dashboard Informaticien</title>
+ <link rel="stylesheet" href="../../css/global.css"/>
+ <link rel="stylesheet" href="../../css/components.css"/>
+ <link rel="stylesheet" href="../../css/pages/dashboard.css"/>
 </head>
 <body class="dashboard-body">
-
-  <!-- NAVBAR -->
-  <nav class="navbar">
-    <div class="navbar-brand">
-      <img src="../../assets/logo.png" alt="UATM"/>
-      <div class="brand-text">UATM <span>Gestion des Mémoires</span></div>
-    </div>
-    <div class="navbar-user">
-      <span class="badge badge-info">Informaticien</span>
-      <strong class="user-name" id="user-name">—</strong>
-    </div>
-  </nav>
-
-  <div class="layout-with-sidebar">
-
-    <!-- SIDEBAR -->
-    <aside class="sidebar">
-      <div class="sidebar-section-title">Navigation</div>
-
-      <a href="dashboard.html" class="active">
-        <span class="icon">🏠</span> Tableau de bord
-      </a>
-      <a href="creer-compte.html"><span class="icon">👤</span> Créer un compte</a>
-      <a href="upload-memoire.html">
-        <span class="icon">📤</span> Uploader un mémoire
-      </a>
-      <a href="upload-multiple.html">
-        <span class="icon">📦</span> Upload multiple
-      </a>
-
-      <div class="sidebar-section-title">Bibliothèque</div>
-      <a href="../../pages/etudiant/recherche.html">
-        <span class="icon">🔍</span> Rechercher
-      </a>
-      <a href="../../pages/etudiant/consulter-memoire.html">
-        <span class="icon">📖</span> Consulter
-      </a>
-
-      <a href="../../pages/profil.html"><span class="icon">⚙️</span> Mon profil</a>
-      <div class="sidebar-logout">
-        <button onclick="Auth.logout()">
-          <span>🚪</span> Déconnexion
-        </button>
-      </div>
-    </aside>
-
-    <!-- CONTENU PRINCIPAL -->
-    <main class="main-content">
-
-      <!-- Bannière de bienvenue -->
-      <div class="welcome-banner">
-        <div>
-          <h2>Bienvenue, <span id="welcome-name">—</span> 👋</h2>
-          <p>Gérez les mémoires, créez des comptes et supervisez la bibliothèque.</p>
-          <div class="quick-actions">
-            <a href="upload-memoire.html"  class="quick-btn">📤 Uploader</a>
-            <a href="upload-multiple.html" class="quick-btn">📦 Upload multiple</a>
-            <a href="../../pages/etudiant/recherche.html" class="quick-btn">🔍 Rechercher</a>
-          </div>
-        </div>
-        <div class="welcome-icon">🖥️</div>
-      </div>
-
-      <!-- Statistiques -->
-      <div class="stats-grid">
-        <div class="card stat-card">
-          <div class="stat-icon">📚</div>
-          <div class="stat-number" id="stat-total">—</div>
-          <div class="stat-label">Mémoires au total</div>
-        </div>
-        <div class="card stat-card">
-          <div class="stat-icon">✅</div>
-          <div class="stat-number" id="stat-valides">—</div>
-          <div class="stat-label">Validés</div>
-        </div>
-        <div class="card stat-card">
-          <div class="stat-icon">⏳</div>
-          <div class="stat-number" id="stat-attente">—</div>
-          <div class="stat-label">En attente</div>
-        </div>
-        <div class="card stat-card">
-          <div class="stat-icon">👤</div>
-          <div class="stat-number" id="stat-users">—</div>
-          <div class="stat-label">Utilisateurs</div>
-        </div>
-      </div>
-
-      <!-- Grille : Activité récente + Actions rapides -->
-      <div class="grid-2">
-
-        <!-- Activité récente -->
-        <div class="card">
-          <div class="card-header">
-            <h3 class="card-title">📋 Mémoires récents</h3>
-            <a href="../../pages/etudiant/recherche.html" class="btn btn-ghost btn-sm">Voir tout</a>
-          </div>
-          <div class="recent-list" id="recent-list">
-            <p style="color:var(--gris-texte);text-align:center;padding:20px">Chargement…</p>
-          </div>
-        </div>
-
-        <!-- Actions de gestion -->
-        <div class="card">
-          <div class="card-header">
-            <h3 class="card-title">⚙️ Gestion</h3>
-          </div>
-          <div style="display:flex;flex-direction:column;gap:12px">
-
-            <a href="upload-memoire.html" class="recent-item" style="text-decoration:none">
-              <div class="recent-icon">📤</div>
-              <div class="recent-info">
-                <strong>Uploader un mémoire</strong>
-                <span>Ajouter un mémoire individuel à la bibliothèque</span>
-              </div>
-              <span style="color:var(--bleu)">→</span>
-            </a>
-
-            <a href="upload-multiple.html" class="recent-item" style="text-decoration:none">
-              <div class="recent-icon">📦</div>
-              <div class="recent-info">
-                <strong>Upload multiple</strong>
-                <span>Importer plusieurs mémoires en une fois</span>
-              </div>
-              <span style="color:var(--bleu)">→</span>
-            </a>
-
-            <a href="../../pages/etudiant/recherche.html" class="recent-item" style="text-decoration:none">
-              <div class="recent-icon">🔍</div>
-              <div class="recent-info">
-                <strong>Rechercher un mémoire</strong>
-                <span>Trouver par titre, auteur ou domaine</span>
-              </div>
-              <span style="color:var(--bleu)">→</span>
-            </a>
-
-            <a href="../../pages/etudiant/consulter-memoire.html" class="recent-item" style="text-decoration:none">
-              <div class="recent-icon">📖</div>
-              <div class="recent-info">
-                <strong>Consulter un mémoire</strong>
-                <span>Lire, commenter ou liker un mémoire</span>
-              </div>
-              <span style="color:var(--bleu)">→</span>
-            </a>
-
-          </div>
-        </div>
-
-      </div>
-
-    </main>
-  </div>
-
-  <!-- FOOTER -->
-  <footer class="footer">© 2025 <span>UATM</span> — Système de Gestion des Mémoires</footer>
-
-  <script src="../../js/auth.js"></script>
-  <script src="../../js/api.js"></script>
-  <script src="../../js/router.js"></script>
-  <script>
-    // Garde : informaticien uniquement
-    Router.guard('informaticien');
-
-    // Afficher le nom
-    const user = Auth.getUser();
-    if (user) {
-      document.getElementById('user-name').textContent    = user.nom || user.email;
-      document.getElementById('welcome-name').textContent = user.prenom || user.nom || 'Administrateur';
-    }
-
-    // Charger les statistiques
-    async function loadStats() {
-      try {
-        const data = await Api.get('/stats');
-        if (data) {
-          document.getElementById('stat-total').textContent  = data.total   ?? '—';
-          document.getElementById('stat-valides').textContent= data.valides ?? '—';
-          document.getElementById('stat-attente').textContent= data.attente ?? '—';
-          document.getElementById('stat-users').textContent  = data.users   ?? '—';
-        }
-      } catch(e) { /* stats non disponibles */ }
-    }
-
-    // Charger les mémoires récents
-    async function loadRecent() {
-      const list = document.getElementById('recent-list');
-      try {
-        const data = await Api.get('/memoires?limit=5&sort=recent');
-        if (data && data.length) {
-          list.innerHTML = data.map(m => `
-            <div class="recent-item">
-              <div class="recent-icon">📄</div>
-              <div class="recent-info">
-                <strong>${m.titre}</strong>
-                <span>${m.auteur} · ${m.domaine}</span>
-              </div>
-              <span class="recent-date">${m.date ?? ''}</span>
-            </div>
-          `).join('');
-        } else {
-          list.innerHTML = '<p style="color:var(--gris-texte);text-align:center;padding:20px">Aucun mémoire pour l\'instant.</p>';
-        }
-      } catch(e) {
-        list.innerHTML = '<p style="color:var(--gris-texte);text-align:center;padding:20px">Données non disponibles.</p>';
-      }
-    }
-
-    loadStats();
-    loadRecent();
-  </script>
+ <!-- NAVBAR -->
+ <nav class="navbar">
+ <div class="navbar-brand">
+ <img src="../../assets/logo.png" alt="UATM"/>
+ <div class="brand-text">UATM <span>Gestion des Mémoires</span></div>
+ </div>
+ <div class="navbar-user">
+ <span class="badge badge-info">Informaticien</span>
+ <strong class="user-name" id="user-name"></strong>
+ </div>
+ </nav>
+ <div class="layout-with-sidebar">
+ <!-- SIDEBAR -->
+ <aside class="sidebar">
+ <div class="sidebar-section-title">Navigation</div>
+ <a href="dashboard.html" class="active">
+ Tableau de bord
+ </a>
+ <a href="creer-compte.html"> Créer un compte</a>
+ <a href="upload-memoire.html">
+ Uploader un mémoire
+ </a>
+ <a href="upload-multiple.html">
+ Upload multiple
+ </a>
+ <div class="sidebar-section-title">Bibliothèque</div>
+ <a href="../../pages/etudiant/recherche.html">
+ Rechercher
+ </a>
+ <a href="../../pages/etudiant/consulter-memoire.html">
+ Consulter
+ </a>
+ <a href="../../pages/profil.html"> Mon profil</a>
+ <div class="sidebar-logout">
+ <button onclick="Auth.logout()">
+  Déconnexion
+ </button>
+ </div>
+ </aside>
+ <!-- CONTENU PRINCIPAL -->
+ <main class="main-content">
+ <!-- Bannière de bienvenue -->
+ <div class="welcome-banner">
+ <div>
+ <h2>Bienvenue, <span id="welcome-name"></span> </h2>
+ <p>Gérez les mémoires, créez des comptes et supervisez la bibliothèque.</p>
+ <div class="quick-actions">
+ <a href="upload-memoire.html" class="quick-btn"> Uploader</a>
+ <a href="upload-multiple.html" class="quick-btn"> Upload multiple</a>
+ <a href="../../pages/etudiant/recherche.html" class="quick-btn"> Rechercher</a>
+ </div>
+ </div>
+ </div>
+ <!-- Statistiques -->
+ <div class="stats-grid">
+ <div class="card stat-card">
+ <div class="stat-number" id="stat-total"></div>
+ <div class="stat-label">Mémoires au total</div>
+ </div>
+ <div class="card stat-card">
+ <div class="stat-number" id="stat-valides"></div>
+ <div class="stat-label">Validés</div>
+ </div>
+ <div class="card stat-card">
+ <div class="stat-number" id="stat-attente"></div>
+ <div class="stat-label">En attente</div>
+ </div>
+ <div class="card stat-card">
+ <div class="stat-number" id="stat-users"></div>
+ <div class="stat-label">Utilisateurs</div>
+ </div>
+ </div>
+ <!-- Grille : Activité récente + Actions rapides -->
+ <div class="grid-2">
+ <!-- Activité récente -->
+ <div class="card">
+ <div class="card-header">
+ <h3 class="card-title"> Mémoires récents</h3>
+ <a href="../../pages/etudiant/recherche.html" class="btn btn-ghost btn-sm">Voir tout</a>
+ </div>
+ <div class="recent-list" id="recent-list">
+ <p style="color:var(--gris-texte);text-align:center;padding:20px">Chargement</p>
+ </div>
+ </div>
+ <!-- Actions de gestion -->
+ <div class="card">
+ <div class="card-header">
+ <h3 class="card-title"> Gestion</h3>
+ </div>
+ <div style="display:flex;flex-direction:column;gap:12px">
+ <a href="upload-memoire.html" class="recent-item" style="text-decoration:none">
+ <div class="recent-info">
+ <strong>Uploader un mémoire</strong>
+ <span>Ajouter un mémoire individuel à la bibliothèque</span>
+ </div>
+ <span style="color:var(--bleu)"></span>
+ </a>
+ <a href="upload-multiple.html" class="recent-item" style="text-decoration:none">
+ <div class="recent-info">
+ <strong>Upload multiple</strong>
+ <span>Importer plusieurs mémoires en une fois</span>
+ </div>
+ <span style="color:var(--bleu)"></span>
+ </a>
+ <a href="../../pages/etudiant/recherche.html" class="recent-item" style="text-decoration:none">
+ <div class="recent-info">
+ <strong>Rechercher un mémoire</strong>
+ <span>Trouver par titre, auteur ou domaine</span>
+ </div>
+ <span style="color:var(--bleu)"></span>
+ </a>
+ <a href="../../pages/etudiant/consulter-memoire.html" class="recent-item" style="text-decoration:none">
+ <div class="recent-info">
+ <strong>Consulter un mémoire</strong>
+ <span>Lire, commenter ou liker un mémoire</span>
+ </div>
+ <span style="color:var(--bleu)"></span>
+ </a>
+ </div>
+ </div>
+ </div>
+ </main>
+ </div>
+ <!-- FOOTER -->
+ <footer class="footer"> 2025 <span>UATM</span> Système de Gestion des Mémoires</footer>
+ <script src="../../js/auth.js"></script>
+ <script src="../../js/router.js"></script>
+ <script>
+ // Garde : informaticien uniquement
+ Router.guard('informaticien');
+ // Afficher le nom
+ const user = Auth.getUser();
+ if (user) {
+ document.getElementById('user-name').textContent = user.nom || user.email;
+ document.getElementById('welcome-name').textContent = user.prenom || user.nom || 'Administrateur';
+ }
+ // Charger les statistiques
+ async function loadStats() {
+ // Données statiques
+ const data = { total: 156, valides: 142, attente: 14, users: 45 };
+ if (data) {
+ document.getElementById('stat-total').textContent = data.total ?? '';
+ document.getElementById('stat-valides').textContent= data.valides ?? '';
+ document.getElementById('stat-attente').textContent= data.attente ?? '';
+ document.getElementById('stat-users').textContent = data.users ?? '';
+ }
+ }
+ // Charger les mémoires récents
+ async function loadRecent() {
+ const list = document.getElementById('recent-list');
+ // Données statiques
+ const data = [
+ { id: 1, titre: "Intelligence Artificielle et Santé", auteur: "Jean Dupont", domaine: "Informatique", date: "12/05/2023" },
+ { id: 2, titre: "Blockchain et Sécurité", auteur: "Marie Curie", domaine: "Informatique", date: "10/05/2023" },
+ { id: 3, titre: "Energies Renouvelables au Bénin", auteur: "Koffi Mensah", domaine: "Environnement", date: "08/05/2023" }
+ ];
+ if (data && data.length) {
+ list.innerHTML = data.map(m => `
+ <div class="recent-item">
+ <div class="recent-info">
+ <strong>${m.titre}</strong>
+ <span>${m.auteur} ${m.domaine}</span>
+ </div>
+ <span class="recent-date">${m.date ?? ''}</span>
+ </div>
+ `).join('');
+ } else {
+ list.innerHTML = '<p style="color:var(--gris-texte);text-align:center;padding:20px">Aucun mémoire pour l\'instant.</p>';
+ }
+ }
+ loadStats();
+ loadRecent();
+ </script>
 </body>
 </html>

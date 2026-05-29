@@ -1,205 +1,167 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Soumettre un mémoire — UATM</title>
-  <link rel="stylesheet" href="../../css/global.css"/>
-  <link rel="stylesheet" href="../../css/components.css"/>
-  <link rel="stylesheet" href="../../css/pages/dashboard.css"/>
-  <link rel="stylesheet" href="../../css/pages/upload.css"/>
+ <meta charset="UTF-8"/>
+ <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+ <title>Soumettre un mémoire UATM</title>
+ <link rel="stylesheet" href="../../css/global.css"/>
+ <link rel="stylesheet" href="../../css/components.css"/>
+ <link rel="stylesheet" href="../../css/pages/dashboard.css"/>
+ <link rel="stylesheet" href="../../css/pages/upload.css"/>
 </head>
 <body class="dashboard-body">
-  <nav class="navbar">
-    <div class="navbar-brand">
-      <img src="../../assets/logo.png" alt="UATM"/>
-      <div class="brand-text">UATM <span>Gestion des Mémoires</span></div>
-    </div>
-    <div class="navbar-user">
-      <span class="badge badge-warning">Diplomé</span>
-      <strong class="user-name" id="user-name">—</strong>
-    </div>
-  </nav>
-
-  <div class="layout-with-sidebar">
-    <aside class="sidebar">
-      <div class="sidebar-section-title">Navigation</div>
-      <a href="dashboard.html"><span class="icon">🏠</span> Tableau de bord</a>
-      <a href="soumettre-memoire.html" class="active"><span class="icon">📝</span> Soumettre un mémoire</a>
-      <div class="sidebar-section-title">Bibliothèque</div>
-      <a href="../../pages/etudiant/recherche.html"><span class="icon">🔍</span> Rechercher</a>
-      <div class="sidebar-logout">
-        <button onclick="Auth.logout()"><span>🚪</span> Déconnexion</button>
-      </div>
-    </aside>
-
-    <main class="main-content">
-      <div class="page-header">
-        <h1>📝 Soumettre mon mémoire</h1>
-        <p>Remplissez le formulaire pour soumettre votre mémoire à la validation du professeur.</p>
-      </div>
-
-      <div class="alert alert-info">🔔 Après soumission, votre mémoire sera examiné par un professeur. Vous recevrez une notification par email.</div>
-
-      <div id="alert-box" style="display:none"></div>
-
-      <div class="grid-2" style="align-items:start">
-        <div class="card">
-          <div class="card-header"><h3 class="card-title">📝 Informations</h3></div>
-
-          <div class="form-group">
-            <label class="form-label">Titre du mémoire *</label>
-            <input class="form-control" type="text" id="titre" placeholder="Titre complet de votre mémoire"/>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Co-auteurs (si applicable)</label>
-            <input class="form-control" type="text" id="coauteurs" placeholder="Noms des co-auteurs séparés par une virgule"/>
-          </div>
-          <div class="grid-2" style="gap:12px">
-            <div class="form-group">
-              <label class="form-label">Année académique *</label>
-              <select class="form-control" id="annee">
-                <option value="">— Choisir —</option>
-                <option>2024-2025</option>
-                <option>2023-2024</option>
-                <option>2022-2023</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label class="form-label">Domaine / Filière *</label>
-              <select class="form-control" id="domaine">
-                <option value="">— Choisir —</option>
-                <option>Informatique</option>
-                <option>Génie Civil</option>
-                <option>Management</option>
-                <option>Droit</option>
-                <option>Sciences</option>
-              </select>
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Directeur de mémoire *</label>
-            <input class="form-control" type="text" id="directeur" placeholder="Nom complet du professeur encadreur"/>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Résumé *</label>
-            <textarea class="form-control" id="resume" rows="5" placeholder="Résumé de votre mémoire (200-500 mots)…"></textarea>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Mots-clés</label>
-            <input class="form-control" type="text" id="mots_cles" placeholder="Ex: machine learning, réseau de neurones"/>
-          </div>
-        </div>
-
-        <div style="display:flex;flex-direction:column;gap:20px">
-          <div class="card">
-            <div class="card-header"><h3 class="card-title">📎 Fichier PDF *</h3></div>
-            <div class="upload-zone" id="upload-zone" onclick="document.getElementById('file-input').click()">
-              <div class="upload-icon">📄</div>
-              <p>Cliquez ou glissez votre mémoire PDF</p>
-              <small>PDF uniquement · Max 50 Mo</small>
-            </div>
-            <input type="file" id="file-input" accept=".pdf" style="display:none"/>
-            <div id="file-preview" style="display:none" class="file-preview">
-              <span class="file-icon">📄</span>
-              <div class="file-info">
-                <strong id="file-name">—</strong>
-                <span id="file-size">—</span>
-              </div>
-              <button class="remove-file" onclick="removeFile()">✕</button>
-            </div>
-          </div>
-
-          <div class="card">
-            <div class="card-header"><h3 class="card-title">📋 Récapitulatif</h3></div>
-            <p style="font-size:0.88rem;color:var(--gris-texte);margin-bottom:16px">
-              Vérifiez vos informations avant de soumettre. Une fois soumis, votre mémoire sera en attente de validation.
-            </p>
-            <button class="btn btn-primary" style="width:100%;justify-content:center" onclick="soumettre()" id="submit-btn">
-              📝 Soumettre le mémoire
-            </button>
-            <a href="dashboard.html" class="btn btn-ghost" style="width:100%;justify-content:center;margin-top:8px">Annuler</a>
-          </div>
-        </div>
-      </div>
-    </main>
-  </div>
-
-  <footer class="footer">© 2025 <span>UATM</span> — Système de Gestion des Mémoires</footer>
-
-  <script src="../../js/auth.js"></script>
-  <script src="../../js/api.js"></script>
-  <script src="../../js/router.js"></script>
-  <script>
-    Router.guard('diplome');
-    const user = Auth.getUser();
-    if (user) document.getElementById('user-name').textContent = user.nom || user.email;
-
-    let selectedFile = null;
-    const zone  = document.getElementById('upload-zone');
-    const input = document.getElementById('file-input');
-
-    zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('dragover'); });
-    zone.addEventListener('dragleave', () => zone.classList.remove('dragover'));
-    zone.addEventListener('drop', e => { e.preventDefault(); zone.classList.remove('dragover'); if(e.dataTransfer.files[0]) setFile(e.dataTransfer.files[0]); });
-    input.addEventListener('change', e => { if(e.target.files[0]) setFile(e.target.files[0]); });
-
-    function setFile(f) {
-      if (f.type !== 'application/pdf') { alert('PDF uniquement'); return; }
-      selectedFile = f;
-      document.getElementById('file-name').textContent = f.name;
-      document.getElementById('file-size').textContent = (f.size/1024/1024).toFixed(1)+' Mo';
-      document.getElementById('file-preview').style.display = 'flex';
-      zone.style.display = 'none';
-    }
-    function removeFile() {
-      selectedFile = null; input.value='';
-      document.getElementById('file-preview').style.display = 'none';
-      zone.style.display = '';
-    }
-
-    function showAlert(msg, type='error') {
-      const b = document.getElementById('alert-box');
-      b.className = `alert alert-${type}`; b.textContent = msg; b.style.display='flex';
-    }
-
-    async function soumettre() {
-      const titre   = document.getElementById('titre').value.trim();
-      const annee   = document.getElementById('annee').value;
-      const domaine = document.getElementById('domaine').value;
-      const directeur = document.getElementById('directeur').value.trim();
-      const resume  = document.getElementById('resume').value.trim();
-
-      if (!titre || !annee || !domaine || !directeur || !resume) { showAlert('Remplissez tous les champs obligatoires (*)'); return; }
-      if (!selectedFile) { showAlert('Joignez votre fichier PDF'); return; }
-
-      const btn = document.getElementById('submit-btn');
-      btn.disabled = true; btn.textContent = 'Soumission en cours…';
-
-      try {
-        const fd = new FormData();
-        fd.append('fichier', selectedFile);
-        fd.append('titre', titre);
-        fd.append('annee', annee);
-        fd.append('domaine', domaine);
-        fd.append('directeur', directeur);
-        fd.append('resume', resume);
-        fd.append('coauteurs', document.getElementById('coauteurs').value);
-        fd.append('mots_cles', document.getElementById('mots_cles').value);
-
-        const res = await Api.postFile('/soumissions', fd);
-        if (res && res.id) {
-          showAlert('✅ Mémoire soumis avec succès ! Vous recevrez une notification dès sa validation.', 'success');
-          setTimeout(() => window.location.href = 'dashboard.html', 2000);
-        } else {
-          showAlert(res?.message || 'Erreur lors de la soumission.');
-          btn.disabled = false; btn.textContent = '📝 Soumettre le mémoire';
-        }
-      } catch(e) {
-        showAlert('Erreur réseau. Réessayez.');
-        btn.disabled = false; btn.textContent = '📝 Soumettre le mémoire';
-      }
-    }
-  </script>
+ <nav class="navbar">
+ <div class="navbar-brand">
+ <img src="../../assets/logo.png" alt="UATM"/>
+ <div class="brand-text">UATM <span>Gestion des Mémoires</span></div>
+ </div>
+ <div class="navbar-user">
+ <span class="badge badge-warning">Diplomé</span>
+ <strong class="user-name" id="user-name"></strong>
+ </div>
+ </nav>
+ <div class="layout-with-sidebar">
+ <aside class="sidebar">
+ <div class="sidebar-section-title">Navigation</div>
+ <a href="dashboard.html"> Tableau de bord</a>
+ <a href="soumettre-memoire.html" class="active"> Soumettre un mémoire</a>
+ <div class="sidebar-section-title">Bibliothèque</div>
+ <a href="../../pages/etudiant/recherche.html"> Rechercher</a>
+ <div class="sidebar-logout">
+ <button onclick="Auth.logout()"> Déconnexion</button>
+ </div>
+ </aside>
+ <main class="main-content">
+ <div class="page-header">
+ <h1> Soumettre mon mémoire</h1>
+ <p>Remplissez le formulaire pour soumettre votre mémoire à la validation du professeur.</p>
+ </div>
+ <div class="alert alert-info"> Après soumission, votre mémoire sera examiné par un professeur. Vous recevrez une notification par email.</div>
+ <div id="alert-box" style="display:none"></div>
+ <div class="grid-2" style="align-items:start">
+ <div class="card">
+ <div class="card-header"><h3 class="card-title"> Informations</h3></div>
+ <div class="form-group">
+ <label class="form-label">Titre du mémoire *</label>
+ <input class="form-control" type="text" id="titre" placeholder="Titre complet de votre mémoire"/>
+ </div>
+ <div class="form-group">
+ <label class="form-label">Co-auteurs (si applicable)</label>
+ <input class="form-control" type="text" id="coauteurs" placeholder="Noms des co-auteurs séparés par une virgule"/>
+ </div>
+ <div class="grid-2" style="gap:12px">
+ <div class="form-group">
+ <label class="form-label">Année académique *</label>
+ <select class="form-control" id="annee">
+ <option value=""> Choisir </option>
+ <option>2024-2025</option>
+ <option>2023-2024</option>
+ <option>2022-2023</option>
+ </select>
+ </div>
+ <div class="form-group">
+ <label class="form-label">Domaine / Filière *</label>
+ <select class="form-control" id="domaine">
+ <option value=""> Choisir </option>
+ <option>Informatique</option>
+ <option>Génie Civil</option>
+ <option>Management</option>
+ <option>Droit</option>
+ <option>Sciences</option>
+ </select>
+ </div>
+ </div>
+ <div class="form-group">
+ <label class="form-label">Directeur de mémoire *</label>
+ <input class="form-control" type="text" id="directeur" placeholder="Nom complet du professeur encadreur"/>
+ </div>
+ <div class="form-group">
+ <label class="form-label">Résumé *</label>
+ <textarea class="form-control" id="resume" rows="5" placeholder="Résumé de votre mémoire (200-500 mots)"></textarea>
+ </div>
+ <div class="form-group">
+ <label class="form-label">Mots-clés</label>
+ <input class="form-control" type="text" id="mots_cles" placeholder="Ex: machine learning, réseau de neurones"/>
+ </div>
+ </div>
+ <div style="display:flex;flex-direction:column;gap:20px">
+ <div class="card">
+ <div class="card-header"><h3 class="card-title"> Fichier PDF *</h3></div>
+ <div class="upload-zone" id="upload-zone" onclick="document.getElementById('file-input').click()">
+ <p>Cliquez ou glissez votre mémoire PDF</p>
+ <small>PDF uniquement Max 50 Mo</small>
+ </div>
+ <input type="file" id="file-input" accept=".pdf" style="display:none"/>
+ <div id="file-preview" style="display:none" class="file-preview">
+ <span class="file-icon"></span>
+ <div class="file-info">
+ <strong id="file-name"></strong>
+ <span id="file-size"></span>
+ </div>
+ <button class="remove-file" onclick="removeFile()"></button>
+ </div>
+ </div>
+ <div class="card">
+ <div class="card-header"><h3 class="card-title"> Récapitulatif</h3></div>
+ <p style="font-size:0.88rem;color:var(--gris-texte);margin-bottom:16px">
+ Vérifiez vos informations avant de soumettre. Une fois soumis, votre mémoire sera en attente de validation.
+ </p>
+ <button class="btn btn-primary" style="width:100%;justify-content:center" onclick="soumettre()" id="submit-btn">
+ Soumettre le mémoire
+ </button>
+ <a href="dashboard.html" class="btn btn-ghost" style="width:100%;justify-content:center;margin-top:8px">Annuler</a>
+ </div>
+ </div>
+ </div>
+ </main>
+ </div>
+ <footer class="footer"> 2025 <span>UATM</span> Système de Gestion des Mémoires</footer>
+ <script src="../../js/auth.js"></script>
+ <script src="../../js/router.js"></script>
+ <script>
+ Router.guard('diplome');
+ const user = Auth.getUser();
+ if (user) document.getElementById('user-name').textContent = user.nom || user.email;
+ let selectedFile = null;
+ const zone = document.getElementById('upload-zone');
+ const input = document.getElementById('file-input');
+ zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('dragover'); });
+ zone.addEventListener('dragleave', () => zone.classList.remove('dragover'));
+ zone.addEventListener('drop', e => { e.preventDefault(); zone.classList.remove('dragover'); if(e.dataTransfer.files[0]) setFile(e.dataTransfer.files[0]); });
+ input.addEventListener('change', e => { if(e.target.files[0]) setFile(e.target.files[0]); });
+ function setFile(f) {
+ if (f.type !== 'application/pdf') { alert('PDF uniquement'); return; }
+ selectedFile = f;
+ document.getElementById('file-name').textContent = f.name;
+ document.getElementById('file-size').textContent = (f.size/1024/1024).toFixed(1)+' Mo';
+ document.getElementById('file-preview').style.display = 'flex';
+ zone.style.display = 'none';
+ }
+ function removeFile() {
+ selectedFile = null; input.value='';
+ document.getElementById('file-preview').style.display = 'none';
+ zone.style.display = '';
+ }
+ function showAlert(msg, type='error') {
+ const b = document.getElementById('alert-box');
+ b.className = `alert alert-${type}`; b.textContent = msg; b.style.display='flex';
+ }
+ function soumettre() {
+ const titre = document.getElementById('titre').value.trim();
+ const annee = document.getElementById('annee').value;
+ const domaine = document.getElementById('domaine').value;
+ const directeur = document.getElementById('directeur').value.trim();
+ const resume = document.getElementById('resume').value.trim();
+ if (!titre || !annee || !domaine || !directeur || !resume) { showAlert('Remplissez tous les champs obligatoires (*)'); return; }
+ if (!selectedFile) { showAlert('Joignez votre fichier PDF'); return; }
+ const btn = document.getElementById('submit-btn');
+ btn.disabled = true; btn.textContent = 'Soumission en cours';
+ 
+ setTimeout(() => {
+ showAlert(' Mémoire soumis avec succès ! Vous recevrez une notification dès sa validation.', 'success');
+ setTimeout(() => window.location.href = 'dashboard.html', 2000);
+ }, 1500);
+ }
+ </script>
 </body>
 </html>

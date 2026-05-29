@@ -1,127 +1,113 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Rechercher un mémoire — UATM</title>
-  <link rel="stylesheet" href="../../css/global.css"/>
-  <link rel="stylesheet" href="../../css/components.css"/>
-  <link rel="stylesheet" href="../../css/pages/dashboard.css"/>
-  <link rel="stylesheet" href="../../css/pages/consulter.css"/>
+ <meta charset="UTF-8"/>
+ <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+ <title>Rechercher un mémoire UATM</title>
+ <link rel="stylesheet" href="../../css/global.css"/>
+ <link rel="stylesheet" href="../../css/components.css"/>
+ <link rel="stylesheet" href="../../css/pages/dashboard.css"/>
+ <link rel="stylesheet" href="../../css/pages/consulter.css"/>
 </head>
 <body class="dashboard-body">
-
-  <nav class="navbar">
-    <div class="navbar-brand">
-      <img src="../../assets/logo.png" alt="UATM"/>
-      <div class="brand-text">UATM <span>Gestion des Mémoires</span></div>
-    </div>
-    <div class="navbar-user">
-      <span class="badge badge-info" id="role-badge">—</span>
-      <strong class="user-name" id="user-name">—</strong>
-    </div>
-  </nav>
-
-  <div class="layout-with-sidebar">
-    <aside class="sidebar" id="sidebar"></aside>
-
-    <main class="main-content">
-      <div class="page-header">
-        <h1>🔍 Rechercher un mémoire</h1>
-        <p>Explorez la bibliothèque des mémoires soutenus à l'UATM.</p>
-      </div>
-
-      <!-- Barre de recherche -->
-      <div class="search-bar">
-        <input type="text" id="search-input" placeholder="Rechercher par titre, auteur, mot-clé…"/>
-        <button class="btn btn-primary" onclick="doSearch()">Rechercher</button>
-      </div>
-
-      <!-- Filtres -->
-      <div class="search-filters">
-        <select id="filtre-domaine">
-          <option value="">Tous les domaines</option>
-          <option>Informatique</option>
-          <option>Génie Civil</option>
-          <option>Management</option>
-          <option>Droit</option>
-          <option>Sciences</option>
-        </select>
-        <select id="filtre-annee">
-          <option value="">Toutes les années</option>
-          <option>2024-2025</option>
-          <option>2023-2024</option>
-          <option>2022-2023</option>
-        </select>
-        <select id="filtre-tri">
-          <option value="recent">Plus récents</option>
-          <option value="titre">Titre A–Z</option>
-          <option value="likes">Plus likés</option>
-        </select>
-      </div>
-
-      <!-- Résultats -->
-      <div id="results-count" style="font-size:0.88rem;color:var(--gris-texte);margin-bottom:16px"></div>
-      <div class="memoire-grid" id="memoire-grid">
-        <p style="color:var(--gris-texte);grid-column:1/-1;text-align:center;padding:40px">
-          Lancez une recherche ou parcourez la bibliothèque.
-        </p>
-      </div>
-    </main>
-  </div>
-
-  <footer class="footer">© 2025 <span>UATM</span> — Système de Gestion des Mémoires</footer>
-
-  <script src="../../js/auth.js"></script>
-  <script src="../../js/api.js"></script>
-  <script src="../../js/router.js"></script>
-  <script src="../../js/pages/recherche.js"></script>
-  <script>
-    Router.guard(); // connecté peu importe le rôle
-
-    const user = Auth.getUser();
-    const role = Auth.getRole();
-    if (user) {
-      document.getElementById('user-name').textContent  = user.nom || user.email;
-      document.getElementById('role-badge').textContent = role || '—';
-    }
-
-    // Sidebar dynamique selon rôle
-    const sidebars = {
-      informaticien: `
-        <div class="sidebar-section-title">Navigation</div>
-        <a href="../informaticien/dashboard.html"><span class="icon">🏠</span> Tableau de bord</a>
-        <a href="../informaticien/upload-memoire.html"><span class="icon">📤</span> Uploader</a>
-        <div class="sidebar-section-title">Bibliothèque</div>
-        <a href="recherche.html" class="active"><span class="icon">🔍</span> Rechercher</a>
-        <a href="consulter-memoire.html"><span class="icon">📖</span> Consulter</a>`,
-      etudiant: `
-        <div class="sidebar-section-title">Navigation</div>
-        <a href="dashboard.html"><span class="icon">🏠</span> Tableau de bord</a>
-        <a href="recherche.html" class="active"><span class="icon">🔍</span> Rechercher</a>
-        <a href="consulter-memoire.html"><span class="icon">📖</span> Consulter</a>`,
-      diplome: `
-        <div class="sidebar-section-title">Navigation</div>
-        <a href="../diplome/dashboard.html"><span class="icon">🏠</span> Tableau de bord</a>
-        <a href="recherche.html" class="active"><span class="icon">🔍</span> Rechercher</a>
-        <a href="consulter-memoire.html"><span class="icon">📖</span> Consulter</a>
-        <a href="../diplome/soumettre-memoire.html"><span class="icon">📝</span> Soumettre</a>`,
-      professeur: `
-        <div class="sidebar-section-title">Navigation</div>
-        <a href="../professeur/dashboard.html"><span class="icon">🏠</span> Tableau de bord</a>
-        <a href="recherche.html" class="active"><span class="icon">🔍</span> Rechercher</a>
-        <a href="../professeur/memoires-en-attente.html"><span class="icon">⏳</span> En attente</a>`
-    };
-    const logout = `<div class="sidebar-logout"><button onclick="Auth.logout()"><span>🚪</span> Déconnexion</button></div>`;
-    document.getElementById('sidebar').innerHTML = (sidebars[role] || '') + logout;
-
-    // Lancer recherche avec Entrée
-    document.getElementById('search-input').addEventListener('keydown', e => {
-      if (e.key === 'Enter') doSearch();
-    });
-
-    // Charger tous les mémoires au démarrage
-    doSearch();
-  </script>
+ <nav class="navbar">
+ <div class="navbar-brand">
+ <img src="../../assets/logo.png" alt="UATM"/>
+ <div class="brand-text">UATM <span>Gestion des Mémoires</span></div>
+ </div>
+ <div class="navbar-user">
+ <span class="badge badge-info" id="role-badge"></span>
+ <strong class="user-name" id="user-name"></strong>
+ </div>
+ </nav>
+ <div class="layout-with-sidebar">
+ <aside class="sidebar" id="sidebar"></aside>
+ <main class="main-content">
+ <div class="page-header">
+ <h1> Rechercher un mémoire</h1>
+ <p>Explorez la bibliothèque des mémoires soutenus à l'UATM.</p>
+ </div>
+ <!-- Barre de recherche -->
+ <div class="search-bar">
+ <input type="text" id="search-input" placeholder="Rechercher par titre, auteur, mot-clé"/>
+ <button class="btn btn-primary" onclick="doSearch()">Rechercher</button>
+ </div>
+ <!-- Filtres -->
+ <div class="search-filters">
+ <select id="filtre-domaine">
+ <option value="">Tous les domaines</option>
+ <option>Informatique</option>
+ <option>Génie Civil</option>
+ <option>Management</option>
+ <option>Droit</option>
+ <option>Sciences</option>
+ </select>
+ <select id="filtre-annee">
+ <option value="">Toutes les années</option>
+ <option>2024-2025</option>
+ <option>2023-2024</option>
+ <option>2022-2023</option>
+ </select>
+ <select id="filtre-tri">
+ <option value="recent">Plus récents</option>
+ <option value="titre">Titre AZ</option>
+ <option value="likes">Plus likés</option>
+ </select>
+ </div>
+ <!-- Résultats -->
+ <div id="results-count" style="font-size:0.88rem;color:var(--gris-texte);margin-bottom:16px"></div>
+ <div class="memoire-grid" id="memoire-grid">
+ <p style="color:var(--gris-texte);grid-column:1/-1;text-align:center;padding:40px">
+ Lancez une recherche ou parcourez la bibliothèque.
+ </p>
+ </div>
+ </main>
+ </div>
+ <footer class="footer"> 2025 <span>UATM</span> Système de Gestion des Mémoires</footer>
+ <script src="../../js/auth.js"></script>
+ <script src="../../js/pages/recherche.js"></script>
+ <script>
+ Router.guard(); // connecté peu importe le rôle
+ const user = Auth.getUser();
+ const role = Auth.getRole();
+ if (user) {
+ document.getElementById('user-name').textContent = user.nom || user.email;
+ document.getElementById('role-badge').textContent = role || '';
+ }
+ // Sidebar dynamique selon rôle
+ const sidebars = {
+ informaticien: `
+ <div class="sidebar-section-title">Navigation</div>
+ <a href="../informaticien/dashboard.html"> Tableau de bord</a>
+ <a href="../informaticien/upload-memoire.html"> Uploader</a>
+ <div class="sidebar-section-title">Bibliothèque</div>
+ <a href="recherche.html" class="active"> Rechercher</a>
+ <a href="consulter-memoire.html"> Consulter</a>`,
+ etudiant: `
+ <div class="sidebar-section-title">Navigation</div>
+ <a href="dashboard.html"> Tableau de bord</a>
+ <a href="recherche.html" class="active"> Rechercher</a>
+ <a href="consulter-memoire.html"> Consulter</a>`,
+ diplome: `
+ <div class="sidebar-section-title">Navigation</div>
+ <a href="../diplome/dashboard.html"> Tableau de bord</a>
+ <a href="recherche.html" class="active"> Rechercher</a>
+ <a href="consulter-memoire.html"> Consulter</a>
+ <a href="../diplome/soumettre-memoire.html"> Soumettre</a>`,
+ professeur: `
+ <div class="sidebar-section-title">Navigation</div>
+ <a href="../professeur/dashboard.html"> Tableau de bord</a>
+ <a href="recherche.html" class="active"> Rechercher</a>
+ <a href="../professeur/memoires-en-attente.html"> En attente</a>`
+ };
+ const logout = `<div class="sidebar-logout"><button onclick="Auth.logout()"> Déconnexion</button></div>`;
+ document.getElementById('sidebar').innerHTML = (sidebars[role] || '') + logout;
+ // Lancer recherche avec Entrée
+ document.getElementById('search-input').addEventListener('keydown', e => {
+ if (e.key === 'Enter') doSearch();
+ });
+ // Charger tous les mémoires au démarrage
+ doSearch();
+ </script>
 </body>
 </html>

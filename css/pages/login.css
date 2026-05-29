@@ -6,32 +6,15 @@
 /* Panneau gauche */
 .login-left {
   flex: 1;
-  background: linear-gradient(160deg, var(--bleu-fonce) 0%, var(--bleu) 100%);
+  background: var(--bleu-fonce);
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 48px 40px;
   position: relative;
-  overflow: hidden;
-}
-.login-left::after {
-  content: '';
-  position: absolute;
-  bottom: -60px; right: -60px;
-  width: 300px; height: 300px;
-  border-radius: 50%;
-  background: rgba(255,255,255,0.05);
-}
-.login-left::before {
-  content: '';
-  position: absolute;
-  top: -40px; left: -40px;
-  width: 200px; height: 200px;
-  border-radius: 50%;
-  background: rgba(211,47,47,0.18);
 }
 .login-left-content { text-align: center; color: var(--blanc); position: relative; z-index: 1; }
-.login-logo { width: 90px; margin: 0 auto 20px; filter: drop-shadow(0 4px 16px rgba(0,0,0,0.3)); }
+.login-logo { width: 90px; margin: 0 auto 20px; }
 .login-left-content h1 { font-size: 2rem; color: var(--blanc); margin-bottom: 8px; }
 .login-left-content p  { color: rgba(255,255,255,0.8); font-size: 1rem; line-height: 1.6; }
 .login-divider { width: 50px; height: 3px; background: var(--rouge); margin: 20px auto; border-radius: 2px; }
@@ -46,7 +29,8 @@
   align-items: center;
   justify-content: center;
   padding: 48px 40px;
-  background: var(--gris);
+  background: var(--blanc);
+  border-left: 1px solid var(--gris-moyen);
 }
 .login-box { width: 100%; }
 .login-box h2 { font-size: 1.7rem; margin-bottom: 6px; }

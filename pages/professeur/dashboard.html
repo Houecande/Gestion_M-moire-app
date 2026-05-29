@@ -1,128 +1,119 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Dashboard — Professeur</title>
-  <link rel="stylesheet" href="../../css/global.css"/>
-  <link rel="stylesheet" href="../../css/components.css"/>
-  <link rel="stylesheet" href="../../css/pages/dashboard.css"/>
+ <meta charset="UTF-8"/>
+ <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+ <title>Dashboard Professeur</title>
+ <link rel="stylesheet" href="../../css/global.css"/>
+ <link rel="stylesheet" href="../../css/components.css"/>
+ <link rel="stylesheet" href="../../css/pages/dashboard.css"/>
 </head>
 <body class="dashboard-body">
-  <nav class="navbar">
-    <div class="navbar-brand">
-      <img src="../../assets/logo.png" alt="UATM"/>
-      <div class="brand-text">UATM <span>Gestion des Mémoires</span></div>
-    </div>
-    <div class="navbar-user">
-      <span class="badge badge-danger">Professeur</span>
-      <strong class="user-name" id="user-name">—</strong>
-    </div>
-  </nav>
-
-  <div class="layout-with-sidebar">
-    <aside class="sidebar">
-      <div class="sidebar-section-title">Navigation</div>
-      <a href="dashboard.html" class="active"><span class="icon">🏠</span> Tableau de bord</a>
-      <a href="memoires-en-attente.html"><span class="icon">⏳</span> Mémoires en attente</a>
-      <a href="valider-memoire.html"><span class="icon">✅</span> Valider conformité</a>
-      <a href="notifications.html"><span class="icon">🔔</span> Notifications</a>
-      <div class="sidebar-section-title">Bibliothèque</div>
-      <a href="../../pages/etudiant/recherche.html"><span class="icon">🔍</span> Rechercher</a>
-      <a href="../../pages/etudiant/consulter-memoire.html"><span class="icon">📖</span> Consulter</a>
-      <a href="../../pages/profil.html"><span class="icon">⚙️</span> Mon profil</a>
-      <div class="sidebar-logout">
-        <button onclick="Auth.logout()"><span>🚪</span> Déconnexion</button>
-      </div>
-    </aside>
-
-    <main class="main-content">
-      <div class="welcome-banner">
-        <div>
-          <h2>Bienvenue, Pr. <span id="welcome-name">—</span> 👨‍🏫</h2>
-          <p>Consultez et validez les mémoires soumis par les étudiants diplomés.</p>
-          <div class="quick-actions">
-            <a href="memoires-en-attente.html" class="quick-btn">⏳ Voir les soumissions</a>
-            <a href="valider-memoire.html"      class="quick-btn">✅ Valider</a>
-          </div>
-        </div>
-        <div class="welcome-icon">👨‍🏫</div>
-      </div>
-
-      <div class="stats-grid">
-        <div class="card stat-card">
-          <div class="stat-icon">⏳</div>
-          <div class="stat-number" id="stat-attente">—</div>
-          <div class="stat-label">En attente</div>
-        </div>
-        <div class="card stat-card">
-          <div class="stat-icon">✅</div>
-          <div class="stat-number" id="stat-valides">—</div>
-          <div class="stat-label">Validés ce mois</div>
-        </div>
-        <div class="card stat-card">
-          <div class="stat-icon">❌</div>
-          <div class="stat-number" id="stat-rejetes">—</div>
-          <div class="stat-label">Rejetés</div>
-        </div>
-        <div class="card stat-card">
-          <div class="stat-icon">📚</div>
-          <div class="stat-number" id="stat-total">—</div>
-          <div class="stat-label">Total traités</div>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-header">
-          <h3 class="card-title">⏳ Soumissions récentes à valider</h3>
-          <a href="memoires-en-attente.html" class="btn btn-primary btn-sm">Voir tout</a>
-        </div>
-        <div id="attente-list" class="recent-list">
-          <p style="color:var(--gris-texte);text-align:center;padding:20px">Chargement…</p>
-        </div>
-      </div>
-    </main>
-  </div>
-
-  <footer class="footer">© 2025 <span>UATM</span> — Système de Gestion des Mémoires</footer>
-
-  <script src="../../js/auth.js"></script>
-  <script src="../../js/api.js"></script>
-  <script src="../../js/router.js"></script>
-  <script>
-    Router.guard('professeur');
-    const user = Auth.getUser();
-    if (user) {
-      document.getElementById('user-name').textContent    = user.nom || user.email;
-      document.getElementById('welcome-name').textContent = user.nom || 'Professeur';
-    }
-    async function loadData() {
-      try {
-        const stats = await Api.get('/stats/professeur');
-        if (stats) {
-          document.getElementById('stat-attente').textContent = stats.attente  ?? '—';
-          document.getElementById('stat-valides').textContent = stats.valides  ?? '—';
-          document.getElementById('stat-rejetes').textContent = stats.rejetes  ?? '—';
-          document.getElementById('stat-total').textContent   = stats.total    ?? '—';
-        }
-        const data = await Api.get('/soumissions?statut=attente&limit=5');
-        const list = document.getElementById('attente-list');
-        if (data && data.length) {
-          list.innerHTML = data.map(s => `
-            <div class="recent-item">
-              <div class="recent-icon">📄</div>
-              <div class="recent-info">
-                <strong>${s.titre}</strong>
-                <span>${s.auteur} · ${s.domaine}</span>
-              </div>
-              <a href="valider-memoire.html?id=${s.id}" class="btn btn-primary btn-sm">Valider</a>
-            </div>`).join('');
-        } else {
-          list.innerHTML = '<p style="color:var(--gris-texte);text-align:center;padding:20px">✅ Aucune soumission en attente.</p>';
-        }
-      } catch(e) {}
-    }
-    loadData();
-  </script>
+ <nav class="navbar">
+ <div class="navbar-brand">
+ <img src="../../assets/logo.png" alt="UATM"/>
+ <div class="brand-text">UATM <span>Gestion des Mémoires</span></div>
+ </div>
+ <div class="navbar-user">
+ <span class="badge badge-danger">Professeur</span>
+ <strong class="user-name" id="user-name"></strong>
+ </div>
+ </nav>
+ <div class="layout-with-sidebar">
+ <aside class="sidebar">
+ <div class="sidebar-section-title">Navigation</div>
+ <a href="dashboard.html" class="active"> Tableau de bord</a>
+ <a href="memoires-en-attente.html"> Mémoires en attente</a>
+ <a href="valider-memoire.html"> Valider conformité</a>
+ <a href="notifications.html"> Notifications</a>
+ <div class="sidebar-section-title">Bibliothèque</div>
+ <a href="../../pages/etudiant/recherche.html"> Rechercher</a>
+ <a href="../../pages/etudiant/consulter-memoire.html"> Consulter</a>
+ <a href="../../pages/profil.html"> Mon profil</a>
+ <div class="sidebar-logout">
+ <button onclick="Auth.logout()"> Déconnexion</button>
+ </div>
+ </aside>
+ <main class="main-content">
+ <div class="welcome-banner">
+ <div>
+ <h2>Bienvenue, Pr. <span id="welcome-name"></span> </h2>
+ <p>Consultez et validez les mémoires soumis par les étudiants diplomés.</p>
+ <div class="quick-actions">
+ <a href="memoires-en-attente.html" class="quick-btn"> Voir les soumissions</a>
+ <a href="valider-memoire.html" class="quick-btn"> Valider</a>
+ </div>
+ </div>
+ </div>
+ <div class="stats-grid">
+ <div class="card stat-card">
+ <div class="stat-number" id="stat-attente"></div>
+ <div class="stat-label">En attente</div>
+ </div>
+ <div class="card stat-card">
+ <div class="stat-number" id="stat-valides"></div>
+ <div class="stat-label">Validés ce mois</div>
+ </div>
+ <div class="card stat-card">
+ <div class="stat-number" id="stat-rejetes"></div>
+ <div class="stat-label">Rejetés</div>
+ </div>
+ <div class="card stat-card">
+ <div class="stat-number" id="stat-total"></div>
+ <div class="stat-label">Total traités</div>
+ </div>
+ </div>
+ <div class="card">
+ <div class="card-header">
+ <h3 class="card-title"> Soumissions récentes à valider</h3>
+ <a href="memoires-en-attente.html" class="btn btn-primary btn-sm">Voir tout</a>
+ </div>
+ <div id="attente-list" class="recent-list">
+ <p style="color:var(--gris-texte);text-align:center;padding:20px">Chargement</p>
+ </div>
+ </div>
+ </main>
+ </div>
+ <footer class="footer"> 2025 <span>UATM</span> Système de Gestion des Mémoires</footer>
+ <script src="../../js/auth.js"></script>
+ <script src="../../js/router.js"></script>
+ <script>
+ Router.guard('professeur');
+ const user = Auth.getUser();
+ if (user) {
+ document.getElementById('user-name').textContent = user.nom || user.email;
+ document.getElementById('welcome-name').textContent = user.nom || 'Professeur';
+ }
+ async function loadData() {
+ // Données statiques
+ const stats = { attente: 5, valides: 12, rejetes: 2, total: 14 };
+ if (stats) {
+ document.getElementById('stat-attente').textContent = stats.attente ?? '';
+ document.getElementById('stat-valides').textContent = stats.valides ?? '';
+ document.getElementById('stat-rejetes').textContent = stats.rejetes ?? '';
+ document.getElementById('stat-total').textContent = stats.total ?? '';
+ }
+ 
+ const data = [
+ { id: 1, titre: "Intelligence Artificielle et Santé", auteur: "Jean Dupont", domaine: "Informatique" },
+ { id: 2, titre: "Blockchain et Sécurité", auteur: "Marie Curie", domaine: "Informatique" },
+ { id: 5, titre: "Optimisation des Algorithmes de Tri", auteur: "Alice Martin", domaine: "Informatique" }
+ ];
+ const list = document.getElementById('attente-list');
+ if (data && data.length) {
+ list.innerHTML = data.map(s => `
+ <div class="recent-item">
+ <div class="recent-info">
+ <strong>${s.titre}</strong>
+ <span>${s.auteur} ${s.domaine}</span>
+ </div>
+ <a href="valider-memoire.html?id=${s.id}" class="btn btn-primary btn-sm">Valider</a>
+ </div>`).join('');
+ } else {
+ list.innerHTML = '<p style="color:var(--gris-texte);text-align:center;padding:20px"> Aucune soumission en attente.</p>';
+ }
+ }
+ loadData();
+ </script>
 </body>
 </html>
