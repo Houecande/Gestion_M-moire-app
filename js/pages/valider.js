@@ -1,6 +1,4 @@
-/* ================================================
-   VALIDER.JS - Helpers pour la validation côté professeur
-   ================================================ */
+/* VALIDER.JS - Helpers pour la validation côté professeur */
 
 // Confirmer et valider rapidement depuis la liste
 async function validerRapide(id) {

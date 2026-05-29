@@ -1,6 +1,4 @@
-/* ================================================
-   NOTIFICATIONS.JS - Gestion des notifications in-app
-   ================================================ */
+/* NOTIFICATIONS.JS - Gestion des notifications in-app */
 
 const Notifications = {
   // Charger le nombre de notifs non lues (pour le badge navbar)

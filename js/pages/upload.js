@@ -1,6 +1,4 @@
-/* ================================================
-   UPLOAD.JS - Gestion upload fichier + soumission
-   ================================================ */
+/* UPLOAD.JS - Gestion upload fichier + soumission */
 
 let selectedFile = null;
 

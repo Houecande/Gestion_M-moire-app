@@ -1,7 +1,3 @@
-/* ================================================
-   RECHERCHE.JS - Recherche + affichage des mémoires
-   ================================================ */
-
 async function doSearch() {
   const q       = document.getElementById('search-input')?.value.trim().toLowerCase() || '';
   const domaine = document.getElementById('filtre-domaine')?.value || '';
