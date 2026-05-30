@@ -21,7 +21,15 @@
  </div>
  </nav>
  <div class="layout-with-sidebar">
- <aside class="sidebar" id="sidebar"></aside>
+ <aside class="sidebar" id="sidebar">
+ <div class="sidebar-section-title">Navigation</div>
+ <a href="dashboard.html"> Tableau de bord</a>
+ <a href="recherche.html" class="active"> Rechercher</a>
+ <a href="consulter-memoire.html"> Consulter</a>
+ <div class="sidebar-logout">
+ <a href="../../login.html" class="btn btn-ghost btn-sm" style="width:100%;justify-content:center"> Déconnexion</a>
+ </div>
+ </aside>
  <main class="main-content">
  <div class="page-header">
  <h1> Rechercher un mémoire</h1>
@@ -30,84 +38,98 @@
  <!-- Barre de recherche -->
  <div class="search-bar">
  <input type="text" id="search-input" placeholder="Rechercher par titre, auteur, mot-clé"/>
- <button class="btn btn-primary" onclick="doSearch()">Rechercher</button>
+ <button class="btn btn-primary">Rechercher</button>
  </div>
  <!-- Filtres -->
  <div class="search-filters">
  <select id="filtre-domaine">
  <option value="">Tous les domaines</option>
- <option>Informatique</option>
- <option>Génie Civil</option>
- <option>Management</option>
- <option>Droit</option>
- <option>Sciences</option>
+ <option>SI (Systèmes d'Information)</option>
+ <option>SIL (Systèmes d'Information et Logiciels)</option>
+ <option>RIT (Réseaux et Infrastructures de Télécoms)</option>
+ <option>ER (Energies Renouvelables)</option>
  </select>
  <select id="filtre-annee">
  <option value="">Toutes les années</option>
+ <option>2025-2026</option>
  <option>2024-2025</option>
  <option>2023-2024</option>
- <option>2022-2023</option>
  </select>
  <select id="filtre-tri">
  <option value="recent">Plus récents</option>
  <option value="titre">Titre AZ</option>
- <option value="likes">Plus likés</option>
  </select>
  </div>
  <!-- Résultats -->
- <div id="results-count" style="font-size:0.88rem;color:var(--gris-texte);margin-bottom:16px"></div>
+ <div id="results-count" style="font-size:0.88rem;color:var(--gris-texte);margin-bottom:16px">3 mémoires trouvés</div>
  <div class="memoire-grid" id="memoire-grid">
- <p style="color:var(--gris-texte);grid-column:1/-1;text-align:center;padding:40px">
- Lancez une recherche ou parcourez la bibliothèque.
- </p>
+ <!-- Carte 1 -->
+ <div class="memoire-card card">
+ <div class="memoire-card-header">
+ <h4>Optimisation des réseaux locaux</h4>
+ </div>
+ <div class="memoire-card-body">
+ <div class="memoire-meta">
+ <span>Auteur : Koffi Mensah</span>
+ <span>Domaine : RIT</span>
+ <span>Année : 2026</span>
+ </div>
+ <div class="like-chip" onclick="toggleLike(this)">
+ <div class="puce">👍</div>
+ <span class="like-count">24</span>
+ </div>
+ </div>
+ <div class="memoire-card-footer">
+ <a href="consulter-memoire.html" class="btn btn-primary btn-sm">Consulter</a>
+ <span class="badge badge-success" style="margin-left:auto;align-self:center">Validé</span>
+ </div>
+ </div>
+ <!-- Carte 2 -->
+ <div class="memoire-card card">
+ <div class="memoire-card-header">
+ <h4>Gestion de stock par IA</h4>
+ </div>
+ <div class="memoire-card-body">
+ <div class="memoire-meta">
+ <span>Auteur : Alice Sossa</span>
+ <span>Domaine : SIL</span>
+ <span>Année : 2026</span>
+ </div>
+ <div class="like-chip active" onclick="toggleLike(this)">
+ <div class="puce">👍</div>
+ <span class="like-count">12</span>
+ </div>
+ </div>
+ <div class="memoire-card-footer">
+ <a href="consulter-memoire.html" class="btn btn-primary btn-sm">Consulter</a>
+ <span class="badge badge-success" style="margin-left:auto;align-self:center">Validé</span>
+ </div>
+ </div>
+ <!-- Carte 3 -->
+ <div class="memoire-card card">
+ <div class="memoire-card-header">
+ <h4>Sécurité des SI hospitaliers</h4>
+ </div>
+ <div class="memoire-card-body">
+ <div class="memoire-meta">
+ <span>Auteur : Marc Agbo</span>
+ <span>Domaine : SI</span>
+ <span>Année : 2025</span>
+ </div>
+ <div class="like-chip" onclick="toggleLike(this)">
+ <div class="puce">👍</div>
+ <span class="like-count">8</span>
+ </div>
+ </div>
+ <div class="memoire-card-footer">
+ <a href="consulter-memoire.html" class="btn btn-primary btn-sm">Consulter</a>
+ <span class="badge badge-success" style="margin-left:auto;align-self:center">Validé</span>
+ </div>
+ </div>
  </div>
  </main>
  </div>
- <footer class="footer"> 2025 <span>UATM</span> Système de Gestion des Mémoires</footer>
- <script src="../../js/auth.js"></script>
- <script src="../../js/pages/recherche.js"></script>
- <script>
- Router.guard(); // connecté peu importe le rôle
- const user = Auth.getUser();
- const role = Auth.getRole();
- if (user) {
- document.getElementById('user-name').textContent = user.nom || user.email;
- document.getElementById('role-badge').textContent = role || '';
- }
- // Sidebar dynamique selon rôle
- const sidebars = {
- informaticien: `
- <div class="sidebar-section-title">Navigation</div>
- <a href="../informaticien/dashboard.html"> Tableau de bord</a>
- <a href="../informaticien/upload-memoire.html"> Uploader</a>
- <div class="sidebar-section-title">Bibliothèque</div>
- <a href="recherche.html" class="active"> Rechercher</a>
- <a href="consulter-memoire.html"> Consulter</a>`,
- etudiant: `
- <div class="sidebar-section-title">Navigation</div>
- <a href="dashboard.html"> Tableau de bord</a>
- <a href="recherche.html" class="active"> Rechercher</a>
- <a href="consulter-memoire.html"> Consulter</a>`,
- diplome: `
- <div class="sidebar-section-title">Navigation</div>
- <a href="../diplome/dashboard.html"> Tableau de bord</a>
- <a href="recherche.html" class="active"> Rechercher</a>
- <a href="consulter-memoire.html"> Consulter</a>
- <a href="../diplome/soumettre-memoire.html"> Soumettre</a>`,
- professeur: `
- <div class="sidebar-section-title">Navigation</div>
- <a href="../professeur/dashboard.html"> Tableau de bord</a>
- <a href="recherche.html" class="active"> Rechercher</a>
- <a href="../professeur/memoires-en-attente.html"> En attente</a>`
- };
- const logout = `<div class="sidebar-logout"><button onclick="Auth.logout()"> Déconnexion</button></div>`;
- document.getElementById('sidebar').innerHTML = (sidebars[role] || '') + logout;
- // Lancer recherche avec Entrée
- document.getElementById('search-input').addEventListener('keydown', e => {
- if (e.key === 'Enter') doSearch();
- });
- // Charger tous les mémoires au démarrage
- doSearch();
- </script>
+ <footer class="footer"> © 2026 <span>UATM</span> — Système de Gestion des Mémoires</footer>
+ <script src="../../js/ui.js"></script>
 </body>
 </html>
