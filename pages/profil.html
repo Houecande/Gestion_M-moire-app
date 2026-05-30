@@ -43,181 +43,56 @@
  <div class="brand-text">UATM <span>Gestion des Mémoires</span></div>
  </div>
  <div class="navbar-user">
- <span class="badge badge-info" id="role-badge"></span>
- <strong class="user-name" id="user-name"></strong>
+ <span class="badge badge-info">Utilisateur</span>
+ <strong class="user-name">Mon Profil</strong>
  </div>
  </nav>
  <div class="layout-with-sidebar">
- <aside class="sidebar" id="sidebar"></aside>
+ <aside class="sidebar" id="sidebar">
+ <div class="sidebar-section-title">Navigation</div>
+ <a href="etudiant/dashboard.html"> Tableau de bord</a>
+ <a href="etudiant/recherche.html"> Rechercher</a>
+ <a href="../login.html" class="btn btn-ghost btn-sm" style="width:100%;justify-content:center;margin-top:20px"> Déconnexion</a>
+ </aside>
  <main class="main-content">
  <!-- En-tête profil -->
  <div class="profil-header">
- <div class="avatar" id="avatar-initiales"></div>
+ <div class="avatar">U</div>
  <div class="profil-info">
- <h2 id="profil-nom"></h2>
- <p id="profil-email"></p>
- <div class="meta">
- <span class="badge badge-info" id="profil-role"></span>
- <span style="font-size:0.82rem;color:var(--gris-texte)" id="profil-filiere"></span>
+ <h2>Utilisateur</h2>
+ <p>email@uatm.edu</p>
  </div>
  </div>
- </div>
- <div id="alert-box" style="display:none"></div>
  <div class="grid-2" style="align-items:start">
  <!-- Modifier informations -->
  <div class="card">
  <div class="card-header">
  <h3 class="card-title"> Mes informations</h3>
  </div>
+ <form action="profil.html">
  <div class="grid-2" style="gap:12px">
  <div class="form-group">
  <label class="form-label">Prénom</label>
- <input class="form-control" type="text" id="edit-prenom"/>
+ <input class="form-control" type="text" placeholder="Prénom" required/>
  </div>
  <div class="form-group">
  <label class="form-label">Nom</label>
- <input class="form-control" type="text" id="edit-nom"/>
+ <input class="form-control" type="text" placeholder="Nom" required/>
  </div>
  </div>
  <div class="form-group">
  <label class="form-label">Email</label>
- <input class="form-control" type="email" id="edit-email"/>
+ <input class="form-control" type="email" placeholder="Email" required/>
  </div>
- <div class="form-group">
- <label class="form-label">Téléphone</label>
- <input class="form-control" type="tel" id="edit-telephone" placeholder="+229 XX XX XX XX"/>
- </div>
- <button class="btn btn-primary" onclick="sauvegarderProfil()" id="save-btn">
+ <button type="submit" class="btn btn-primary">
  Enregistrer les modifications
  </button>
- </div>
- <!-- Changer mot de passe -->
- <div class="card">
- <div class="card-header">
- <h3 class="card-title"> Changer le mot de passe</h3>
- </div>
- <div class="form-group">
- <label class="form-label">Mot de passe actuel</label>
- <input class="form-control" type="password" id="pwd-actuel" placeholder=""/>
- </div>
- <div class="form-group">
- <label class="form-label">Nouveau mot de passe</label>
- <input class="form-control" type="password" id="pwd-nouveau" placeholder="Minimum 8 caractères" oninput="evaluerForce(this.value)"/>
- <div class="password-strength">
- <div class="password-strength-fill" id="pwd-strength-bar"></div>
- </div>
- <div class="strength-label" id="pwd-strength-label"></div>
- </div>
- <div class="form-group">
- <label class="form-label">Confirmer le nouveau mot de passe</label>
- <input class="form-control" type="password" id="pwd-confirm" placeholder=""/>
- </div>
- <button class="btn btn-outline" onclick="changerMotDePasse()" id="pwd-btn">
- Mettre à jour le mot de passe
- </button>
+ </form>
  </div>
  </div>
  </main>
  </div>
- <footer class="footer">© 2026 <span>UATM</span> — Système de Gestion des Mémoires</footer>
- <script src="../js/auth.js"></script>
- <script src="../js/router.js"></script>
- <script>
- Router.guard();
- const user = Auth.getUser();
- const role = Auth.getRole();
- const roleLabels = { informaticien:'Informaticien', etudiant:'Étudiant', diplome:'Diplomé', professeur:'Professeur' };
- if (user) {
- document.getElementById('user-name').textContent = user.nom || user.email;
- document.getElementById('role-badge').textContent = roleLabels[role] || role;
- document.getElementById('profil-nom').textContent = `${user.prenom || ''} ${user.nom || ''}`.trim();
- document.getElementById('profil-email').textContent = user.email || '';
- document.getElementById('profil-role').textContent = roleLabels[role] || role;
- document.getElementById('edit-prenom').value = user.prenom || '';
- document.getElementById('edit-nom').value = user.nom || '';
- document.getElementById('edit-email').value = user.email || '';
- document.getElementById('edit-telephone').value = user.telephone || '';
- if (user.filiere) document.getElementById('profil-filiere').textContent = ` ${user.filiere}`;
- // Initiales dans l'avatar
- const initiales = ((user.prenom?.[0] || '') + (user.nom?.[0] || '')).toUpperCase() || '?';
- document.getElementById('avatar-initiales').textContent = initiales;
- }
- // Sidebar dynamique
- const sidebars = {
- informaticien: `<div class="sidebar-section-title">Navigation</div>
- <a href="informaticien/dashboard.html"> Tableau de bord</a>
- <a href="informaticien/creer-compte.html"> Créer un compte</a>
- <a href="informaticien/upload-memoire.html"> Uploader</a>`,
- etudiant: `<div class="sidebar-section-title">Navigation</div>
- <a href="etudiant/dashboard.html"> Tableau de bord</a>
- <a href="etudiant/recherche.html"> Rechercher</a>`,
- diplome: `<div class="sidebar-section-title">Navigation</div>
- <a href="diplome/dashboard.html"> Tableau de bord</a>
- <a href="diplome/soumettre-memoire.html"> Soumettre</a>
- <a href="diplome/notifications.html"> Notifications</a>`,
- professeur: `<div class="sidebar-section-title">Navigation</div>
- <a href="professeur/dashboard.html"> Tableau de bord</a>
- <a href="professeur/memoires-en-attente.html"> En attente</a>
- <a href="professeur/notifications.html"> Notifications</a>`
- };
- const logout = `<div class="sidebar-section-title">Compte</div>
- <a href="../pages/profil.html" class="active"> Mon profil</a>
- <div class="sidebar-logout"><button onclick="Auth.logout()"> Déconnexion</button></div>`;
- document.getElementById('sidebar').innerHTML = (sidebars[role] || '') + logout;
- function showAlert(msg, type='error') {
- const b = document.getElementById('alert-box');
- b.className=`alert alert-${type}`; b.textContent=msg; b.style.display='flex';
- if (type==='success') setTimeout(()=>b.style.display='none', 4000);
- }
- function sauvegarderProfil() {
- const btn = document.getElementById('save-btn');
- btn.disabled = true; btn.textContent = 'Enregistrement';
- 
- setTimeout(() => {
- const payload = {
- prenom: document.getElementById('edit-prenom').value.trim(),
- nom: document.getElementById('edit-nom').value.trim(),
- email: document.getElementById('edit-email').value.trim(),
- telephone: document.getElementById('edit-telephone').value.trim()
- };
- 
- // Mettre à jour le localStorage
- const updated = { ...Auth.getUser(), ...payload };
- Auth.login(updated);
- showAlert(' Profil mis à jour avec succès.', 'success');
- document.getElementById('profil-nom').textContent = `${payload.prenom} ${payload.nom}`;
- document.getElementById('user-name').textContent = payload.nom;
- const initiales = ((payload.prenom?.[0]||'')+(payload.nom?.[0]||'')).toUpperCase();
- document.getElementById('avatar-initiales').textContent = initiales;
- btn.disabled=false; btn.textContent=' Enregistrer les modifications';
- }, 800);
- }
- function evaluerForce(pwd) {
- const bar = document.getElementById('pwd-strength-bar');
- const label = document.getElementById('pwd-strength-label');
- let score = pwd.length >= 8 ? 100 : (pwd.length / 8 * 100);
- bar.style.width = score + '%';
- bar.style.background = score >= 100 ? 'var(--bleu)' : 'var(--rouge)';
- label.textContent = score >= 100 ? 'Correct' : 'Trop court';
- }
- function changerMotDePasse() {
- const actuel = document.getElementById('pwd-actuel').value;
- const nouveau = document.getElementById('pwd-nouveau').value;
- const confirm = document.getElementById('pwd-confirm').value;
- if (!actuel || !nouveau || !confirm) { showAlert('Remplissez tous les champs du mot de passe.'); return; }
- if (nouveau.length < 8) { showAlert('Le nouveau mot de passe doit faire au moins 8 caractères.'); return; }
- if (nouveau !== confirm) { showAlert('Les mots de passe ne correspondent pas.'); return; }
- const btn = document.getElementById('pwd-btn');
- btn.disabled = true; btn.textContent = 'Mise à jour';
- 
- setTimeout(() => {
- showAlert(' Mot de passe mis à jour.', 'success');
- ['pwd-actuel','pwd-nouveau','pwd-confirm'].forEach(id => document.getElementById(id).value='');
- document.getElementById('pwd-strength-bar').style.width='0%';
- document.getElementById('pwd-strength-label').textContent='';
- btn.disabled=false; btn.textContent=' Mettre à jour le mot de passe';
- }, 800);
- }
- </script>
+ <footer class="footer"> © 2026 <span>UATM</span> — Système de Gestion des Mémoires</footer>
+ <script src="../js/ui.js"></script>
 </body>
 </html>

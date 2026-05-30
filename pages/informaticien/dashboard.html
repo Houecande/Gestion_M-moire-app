@@ -17,35 +17,21 @@
  </div>
  <div class="navbar-user">
  <span class="badge badge-info">Informaticien</span>
- <strong class="user-name" id="user-name"></strong>
+ <strong class="user-name">Administrateur</strong>
  </div>
  </nav>
  <div class="layout-with-sidebar">
  <!-- SIDEBAR -->
  <aside class="sidebar">
  <div class="sidebar-section-title">Navigation</div>
- <a href="dashboard.html" class="active">
- Tableau de bord
- </a>
+ <a href="dashboard.html" class="active"> Tableau de bord</a>
  <a href="creer-compte.html"> Créer un compte</a>
- <a href="upload-memoire.html">
- Uploader un mémoire
- </a>
- <a href="upload-multiple.html">
- Upload multiple
- </a>
+ <a href="upload-memoire.html"> Uploader un mémoire</a>
  <div class="sidebar-section-title">Bibliothèque</div>
- <a href="../../pages/etudiant/recherche.html">
- Rechercher
- </a>
- <a href="../../pages/etudiant/consulter-memoire.html">
- Consulter
- </a>
- <a href="../../pages/profil.html"> Mon profil</a>
+ <a href="../../pages/etudiant/recherche.html"> Rechercher</a>
+ <a href="../../pages/etudiant/consulter-memoire.html"> Consulter</a>
  <div class="sidebar-logout">
- <button onclick="Auth.logout()">
-  Déconnexion
- </button>
+ <a href="../../login.html" class="btn btn-ghost btn-sm" style="width:100%;justify-content:center"> Déconnexion</a>
  </div>
  </aside>
  <!-- CONTENU PRINCIPAL -->
@@ -53,11 +39,10 @@
  <!-- Bannière de bienvenue -->
  <div class="welcome-banner">
  <div>
- <h2>Bienvenue, <span id="welcome-name"></span> </h2>
+ <h2>Bienvenue sur l'espace Administration</h2>
  <p>Gérez les mémoires, créez des comptes et supervisez la bibliothèque.</p>
  <div class="quick-actions">
  <a href="upload-memoire.html" class="quick-btn"> Uploader</a>
- <a href="upload-multiple.html" class="quick-btn"> Upload multiple</a>
  <a href="../../pages/etudiant/recherche.html" class="quick-btn"> Rechercher</a>
  </div>
  </div>
@@ -65,19 +50,19 @@
  <!-- Statistiques -->
  <div class="stats-grid">
  <div class="card stat-card">
- <div class="stat-number" id="stat-total"></div>
+ <div class="stat-number">1256</div>
  <div class="stat-label">Mémoires au total</div>
  </div>
  <div class="card stat-card">
- <div class="stat-number" id="stat-valides"></div>
+ <div class="stat-number">1242</div>
  <div class="stat-label">Validés</div>
  </div>
  <div class="card stat-card">
- <div class="stat-number" id="stat-attente"></div>
+ <div class="stat-number">14</div>
  <div class="stat-label">En attente</div>
  </div>
  <div class="card stat-card">
- <div class="stat-number" id="stat-users"></div>
+ <div class="stat-number">45</div>
  <div class="stat-label">Utilisateurs</div>
  </div>
  </div>
@@ -90,42 +75,39 @@
  <a href="../../pages/etudiant/recherche.html" class="btn btn-ghost btn-sm">Voir tout</a>
  </div>
  <div class="recent-list" id="recent-list">
- <p style="color:var(--gris-texte);text-align:center;padding:20px">Chargement</p>
+ <div class="recent-item">
+ <div class="recent-info">
+ <strong>Analyse de la cybersécurité des SI</strong>
+ <span>Auteur : Étudiant • SI</span>
+ </div>
+ <span class="badge badge-success">Validé</span>
+ </div>
+ <div class="recent-item">
+ <div class="recent-info">
+ <strong>Système de recommandation e-commerce</strong>
+ <span>Auteur : Étudiant • SIL</span>
+ </div>
+ <span class="badge badge-success">Validé</span>
+ </div>
  </div>
  </div>
  <!-- Actions de gestion -->
  <div class="card">
  <div class="card-header">
- <h3 class="card-title"> Gestion</h3>
+ <h3 class="card-title"> Actions rapides</h3>
  </div>
  <div style="display:flex;flex-direction:column;gap:12px">
  <a href="upload-memoire.html" class="recent-item" style="text-decoration:none">
  <div class="recent-info">
  <strong>Uploader un mémoire</strong>
- <span>Ajouter un mémoire individuel à la bibliothèque</span>
+ <span>Ajouter un mémoire individuel</span>
  </div>
- <span style="color:var(--bleu)"></span>
  </a>
- <a href="upload-multiple.html" class="recent-item" style="text-decoration:none">
+ <a href="creer-compte.html" class="recent-item" style="text-decoration:none">
  <div class="recent-info">
- <strong>Upload multiple</strong>
- <span>Importer plusieurs mémoires en une fois</span>
+ <strong>Créer un compte</strong>
+ <span>Ajouter un nouvel utilisateur</span>
  </div>
- <span style="color:var(--bleu)"></span>
- </a>
- <a href="../../pages/etudiant/recherche.html" class="recent-item" style="text-decoration:none">
- <div class="recent-info">
- <strong>Rechercher un mémoire</strong>
- <span>Trouver par titre, auteur ou domaine</span>
- </div>
- <span style="color:var(--bleu)"></span>
- </a>
- <a href="../../pages/etudiant/consulter-memoire.html" class="recent-item" style="text-decoration:none">
- <div class="recent-info">
- <strong>Consulter un mémoire</strong>
- <span>Lire, commenter ou liker un mémoire</span>
- </div>
- <span style="color:var(--bleu)"></span>
  </a>
  </div>
  </div>
@@ -133,54 +115,7 @@
  </main>
  </div>
  <!-- FOOTER -->
- <footer class="footer"> 2025 <span>UATM</span> Système de Gestion des Mémoires</footer>
- <script src="../../js/auth.js"></script>
- <script src="../../js/router.js"></script>
- <script>
- // Garde : informaticien uniquement
- Router.guard('informaticien');
- // Afficher le nom
- const user = Auth.getUser();
- if (user) {
- document.getElementById('user-name').textContent = user.nom || user.email;
- document.getElementById('welcome-name').textContent = user.prenom || user.nom || 'Administrateur';
- }
- // Charger les statistiques
- async function loadStats() {
- // Données statiques
- const data = { total: 156, valides: 142, attente: 14, users: 45 };
- if (data) {
- document.getElementById('stat-total').textContent = data.total ?? '';
- document.getElementById('stat-valides').textContent= data.valides ?? '';
- document.getElementById('stat-attente').textContent= data.attente ?? '';
- document.getElementById('stat-users').textContent = data.users ?? '';
- }
- }
- // Charger les mémoires récents
- async function loadRecent() {
- const list = document.getElementById('recent-list');
- // Données statiques
- const data = [
- { id: 1, titre: "Intelligence Artificielle et Santé", auteur: "Jean Dupont", domaine: "Informatique", date: "12/05/2023" },
- { id: 2, titre: "Blockchain et Sécurité", auteur: "Marie Curie", domaine: "Informatique", date: "10/05/2023" },
- { id: 3, titre: "Energies Renouvelables au Bénin", auteur: "Koffi Mensah", domaine: "Environnement", date: "08/05/2023" }
- ];
- if (data && data.length) {
- list.innerHTML = data.map(m => `
- <div class="recent-item">
- <div class="recent-info">
- <strong>${m.titre}</strong>
- <span>${m.auteur} ${m.domaine}</span>
- </div>
- <span class="recent-date">${m.date ?? ''}</span>
- </div>
- `).join('');
- } else {
- list.innerHTML = '<p style="color:var(--gris-texte);text-align:center;padding:20px">Aucun mémoire pour l\'instant.</p>';
- }
- }
- loadStats();
- loadRecent();
- </script>
+ <footer class="footer"> © 2026 <span>UATM</span> — Système de Gestion des Mémoires</footer>
+ <script src="../../js/ui.js"></script>
 </body>
 </html>

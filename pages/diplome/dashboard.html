@@ -16,7 +16,7 @@
  </div>
  <div class="navbar-user">
  <span class="badge badge-warning">Diplomé</span>
- <strong class="user-name" id="user-name"></strong>
+ <strong class="user-name">Étudiant</strong>
  </div>
  </nav>
  <div class="layout-with-sidebar">
@@ -28,13 +28,13 @@
  <a href="../../pages/etudiant/recherche.html"> Rechercher</a>
  <a href="../../pages/etudiant/consulter-memoire.html"> Consulter</a>
  <div class="sidebar-logout">
- <button onclick="Auth.logout()"> Déconnexion</button>
+ <a href="../../login.html" class="btn btn-ghost btn-sm" style="width:100%;justify-content:center"> Déconnexion</a>
  </div>
  </aside>
  <main class="main-content">
  <div class="welcome-banner">
  <div>
- <h2>Bienvenue, <span id="welcome-name"></span> </h2>
+ <h2>Bienvenue sur votre espace Soumission</h2>
  <p>Soumettez votre mémoire et suivez son statut de validation.</p>
  <div class="quick-actions">
  <a href="soumettre-memoire.html" class="quick-btn"> Soumettre mon mémoire</a>
@@ -43,19 +43,19 @@
  </div>
  <div class="stats-grid">
  <div class="card stat-card">
- <div class="stat-number" id="stat-soumis"></div>
+ <div class="stat-number">2</div>
  <div class="stat-label">Soumissions</div>
  </div>
  <div class="card stat-card">
- <div class="stat-number" id="stat-attente"></div>
+ <div class="stat-number">1</div>
  <div class="stat-label">En attente</div>
  </div>
  <div class="card stat-card">
- <div class="stat-number" id="stat-valide"></div>
+ <div class="stat-number">1</div>
  <div class="stat-label">Validé</div>
  </div>
  <div class="card stat-card">
- <div class="stat-number" id="stat-notifs"></div>
+ <div class="stat-number">3</div>
  <div class="stat-label">Notifications</div>
  </div>
  </div>
@@ -65,49 +65,25 @@
  <a href="soumettre-memoire.html" class="btn btn-primary btn-sm">+ Nouvelle soumission</a>
  </div>
  <div id="soumissions-list" class="recent-list">
- <p style="color:var(--gris-texte);text-align:center;padding:20px">Chargement</p>
+ <div class="recent-item">
+ <div class="recent-info">
+ <strong>Optimisation des processus logistiques</strong>
+ <span>Soumis le 12/05/2026</span>
+ </div>
+ <span class="badge badge-success">Validé</span>
+ </div>
+ <div class="recent-item">
+ <div class="recent-info">
+ <strong>Analyse de la cybersécurité des systèmes</strong>
+ <span>Soumis le 15/05/2026</span>
+ </div>
+ <span class="badge badge-warning">En attente</span>
+ </div>
  </div>
  </div>
  </main>
  </div>
- <footer class="footer"> 2025 <span>UATM</span> Système de Gestion des Mémoires</footer>
- <script src="../../js/auth.js"></script>
- <script src="../../js/router.js"></script>
- <script>
- Router.guard('diplome');
- const user = Auth.getUser();
- if (user) {
- document.getElementById('user-name').textContent = user.nom || user.email;
- document.getElementById('welcome-name').textContent = user.prenom || user.nom || 'Diplomé';
- }
- function loadData() {
- const data = [
- { id: 1, titre: "Optimisation des processus logistiques via l'IA", date: "12/10/2025", statut: "valide" },
- { id: 2, titre: "Analyse de la cybersécurité des systèmes bancaires", date: "15/11/2025", statut: "attente" }
- ];
- 
- const list = document.getElementById('soumissions-list');
- document.getElementById('stat-soumis').textContent = data.length;
- document.getElementById('stat-attente').textContent = data.filter(s => s.statut === 'attente').length;
- document.getElementById('stat-valide').textContent = data.filter(s => s.statut === 'valide').length;
- document.getElementById('stat-notifs').textContent = "3";
- 
- if (data && data.length) {
- list.innerHTML = data.map(s => `
- <div class="recent-item">
- <div class="recent-info">
- <strong>${s.titre}</strong>
- <span>Soumis le ${s.date}</span>
- </div>
- <span class="badge ${s.statut === 'valide' ? 'badge-success' : s.statut === 'rejete' ? 'badge-danger' : 'badge-warning'}">
- ${s.statut === 'valide' ? 'Validé' : s.statut === 'rejete' ? 'Rejeté' : 'En attente'}
- </span>
- </div>`).join('');
- } else {
- list.innerHTML = '<p style="color:var(--gris-texte);text-align:center;padding:20px">Aucune soumission. <a href="soumettre-memoire.html" style="color:var(--bleu)">Soumettre maintenant </a></p>';
- }
- }
- loadData();
- </script>
+ <footer class="footer"> © 2026 <span>UATM</span> — Système de Gestion des Mémoires</footer>
+ <script src="../../js/ui.js"></script>
 </body>
 </html>

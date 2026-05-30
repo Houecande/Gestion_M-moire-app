@@ -17,7 +17,7 @@
  </div>
  <div class="navbar-user">
  <span class="badge badge-danger">Professeur</span>
- <strong class="user-name" id="user-name"></strong>
+ <strong class="user-name">Professeur</strong>
  </div>
  </nav>
  <div class="layout-with-sidebar">
@@ -27,101 +27,46 @@
  <a href="memoires-en-attente.html"> Mémoires en attente</a>
  <a href="valider-memoire.html" class="active"> Valider conformité</a>
  <div class="sidebar-logout">
- <button onclick="Auth.logout()"> Déconnexion</button>
+ <a href="../../login.html" class="btn btn-ghost btn-sm" style="width:100%;justify-content:center"> Déconnexion</a>
  </div>
  </aside>
  <main class="main-content">
  <a href="memoires-en-attente.html" class="btn btn-ghost btn-sm" style="margin-bottom:16px"> Retour à la liste</a>
- <div id="alert-box" style="display:none"></div>
  <div id="validation-content">
- <p style="text-align:center;padding:60px;color:var(--gris-texte)">Chargement</p>
- </div>
- </main>
- </div>
- <footer class="footer"> 2025 <span>UATM</span> Système de Gestion des Mémoires</footer>
- <script src="../../js/auth.js"></script>
- <script src="../../js/api.js"></script>
- <script src="../../js/router.js"></script>
- <script>
- Router.guard('professeur');
- const user = Auth.getUser();
- if (user) document.getElementById('user-name').textContent = user.nom || user.email;
- const params = new URLSearchParams(window.location.search);
- const id = params.get('id');
- function showAlert(msg, type='error') {
- const b = document.getElementById('alert-box');
- b.className=`alert alert-${type}`; b.textContent=msg; b.style.display='flex';
- }
- async function loadMemoire() {
- const c = document.getElementById('validation-content');
- if (!id) { c.innerHTML = '<div class="alert alert-info">Aucun mémoire sélectionné. <a href="memoires-en-attente.html" style="color:var(--bleu)"> Retour à la liste</a></div>'; return; }
- try {
- const m = await Api.get(`/soumissions/${id}`);
- if (!m) { c.innerHTML = '<div class="alert alert-error">Mémoire introuvable.</div>'; return; }
- c.innerHTML = `
  <div class="memoire-detail-header" style="margin-bottom:24px">
- <h2>${m.titre}</h2>
- <p> ${m.auteur} &nbsp;&nbsp; ${m.domaine} &nbsp;&nbsp; ${m.annee}</p>
- <p style="margin-top:4px"> Directeur : ${m.directeur || ''}</p>
- <div class="memoire-actions">
- <a href="${m.fichier_url}" target="_blank" class="btn btn-sm" style="background:rgba(255,255,255,0.15);color:#fff;border:1px solid rgba(255,255,255,0.3)"> Lire le PDF</a>
+ <h2>Analyse de la cybersécurité des systèmes d'information</h2>
+ <p> Étudiant &nbsp;&nbsp; SI &nbsp;&nbsp; 2026</p>
+ <p style="margin-top:4px"> Directeur : Pr. Enseignant</p>
  </div>
- </div>
- <div class="grid-2" style="align-items:start">
+ <form action="memoires-en-attente.html" class="grid-2" style="align-items:start">
  <div class="card">
  <div class="card-header"><h3 class="card-title"> Résumé</h3></div>
- <p style="color:var(--noir);line-height:1.7">${m.resume || 'Non fourni.'}</p>
- ${m.mots_cles ? `<div style="margin-top:12px;display:flex;gap:6px;flex-wrap:wrap">
- ${m.mots_cles.split(',').map(k=>`<span class="badge badge-info">${k.trim()}</span>`).join('')}
- </div>` : ''}
+ <p style="color:var(--noir);line-height:1.7">Résumé du mémoire en cours d'examen...</p>
+ <div style="margin-top:12px;display:flex;gap:6px;flex-wrap:wrap">
+ <span class="badge badge-info">Sécurité</span>
+ <span class="badge badge-info">SI</span>
+ </div>
  </div>
  <div class="card">
  <div class="card-header"><h3 class="card-title"> Décision de conformité</h3></div>
  <div class="form-group">
  <label class="form-label">Remarques / Observations</label>
- <textarea class="form-control" id="remarques" rows="5" placeholder="Vos remarques sur ce mémoire (optionnel)"></textarea>
+ <textarea class="form-control" id="remarques" rows="5" placeholder="Vos remarques sur ce mémoire"></textarea>
  </div>
  <div style="display:flex;gap:12px;margin-top:8px">
- <button class="btn btn-primary" style="flex:1;justify-content:center" onclick="valider()">
+ <button type="submit" class="btn btn-primary" style="flex:1;justify-content:center">
  Valider le mémoire
  </button>
- <button class="btn btn-danger" style="flex:1;justify-content:center" onclick="rejeter()">
+ <button type="button" class="btn btn-danger" style="flex:1;justify-content:center">
  Rejeter
  </button>
  </div>
- <p style="font-size:0.8rem;color:var(--gris-texte);margin-top:10px;text-align:center">
- L'auteur sera notifié par email de votre décision.
- </p>
  </div>
+ </form>
  </div>
- `;
- } catch(e) {
- c.innerHTML = '<div class="alert alert-error">Erreur de chargement.</div>';
- }
- }
- async function valider() {
- if (!confirm('Confirmer la validation de ce mémoire ?')) return;
- const remarques = document.getElementById('remarques')?.value || '';
- try {
- const res = await Api.put(`/soumissions/${id}/valider`, { remarques });
- if (res) {
- showAlert(' Mémoire validé ! L\'auteur a été notifié.', 'success');
- setTimeout(() => window.location.href = 'memoires-en-attente.html', 2000);
- } else { showAlert('Erreur lors de la validation.'); }
- } catch(e) { showAlert('Erreur réseau.'); }
- }
- async function rejeter() {
- if (!confirm('Rejeter ce mémoire ? L\'auteur sera notifié.')) return;
- const remarques = document.getElementById('remarques')?.value || '';
- try {
- const res = await Api.put(`/soumissions/${id}/rejeter`, { remarques });
- if (res) {
- showAlert('Mémoire rejeté. Notification envoyée.', 'success');
- setTimeout(() => window.location.href = 'memoires-en-attente.html', 2000);
- } else { showAlert('Erreur lors du rejet.'); }
- } catch(e) { showAlert('Erreur réseau.'); }
- }
- loadMemoire();
- </script>
+ </main>
+ </div>
+ <footer class="footer"> © 2026 <span>UATM</span> — Système de Gestion des Mémoires</footer>
+ <script src="../../js/ui.js"></script>
 </body>
 </html>
