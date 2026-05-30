@@ -25,12 +25,11 @@
  <div class="sidebar-section-title">Navigation</div>
  <a href="dashboard.html"> Tableau de bord</a>
  <a href="upload-memoire.html" class="active"> Uploader un mémoire</a>
- <a href="upload-multiple.html"> Upload multiple</a>
  <div class="sidebar-section-title">Bibliothèque</div>
- <a href="../../pages/etudiant/recherche.html"> Rechercher</a>
- <a href="../../pages/etudiant/consulter-memoire.html"> Consulter</a>
+ <a href="../etudiant/recherche.html"> Rechercher</a>
+ <a href="../etudiant/consulter-memoire.html"> Consulter</a>
  <div class="sidebar-logout">
- <button onclick="Auth.logout()"> Déconnexion</button>
+ <a href="../../login.html" class="btn btn-ghost btn-sm" style="width:100%;justify-content:center"> Déconnexion</a>
  </div>
  </aside>
  <main class="main-content">
@@ -38,8 +37,7 @@
  <h1> Uploader un mémoire</h1>
  <p>Remplissez les informations du mémoire et joignez le fichier PDF.</p>
  </div>
- <div id="alert-box" style="display:none"></div>
- <div class="grid-2" style="align-items:start">
+ <form action="dashboard.html" class="grid-2" style="align-items:start">
  <!-- Formulaire métadonnées -->
  <div class="card">
  <div class="card-header">
@@ -47,33 +45,30 @@
  </div>
  <div class="form-group">
  <label class="form-label">Titre du mémoire *</label>
- <input class="form-control" type="text" id="titre" placeholder="Ex: Conception d'un système de"/>
+ <input class="form-control" type="text" id="titre" placeholder="Ex: Conception d'un système de" required/>
  </div>
  <div class="form-group">
  <label class="form-label">Auteur(s) *</label>
- <input class="form-control" type="text" id="auteur" placeholder="Nom Prénom de l'étudiant"/>
+ <input class="form-control" type="text" id="auteur" placeholder="Nom Prénom de l'étudiant" required/>
  </div>
  <div class="grid-2" style="gap:12px">
  <div class="form-group">
  <label class="form-label">Année académique *</label>
- <select class="form-control" id="annee">
+ <select class="form-control" id="annee" required>
  <option value=""> Choisir </option>
+ <option>2025-2026</option>
  <option>2024-2025</option>
  <option>2023-2024</option>
- <option>2022-2023</option>
- <option>2021-2022</option>
  </select>
  </div>
  <div class="form-group">
  <label class="form-label">Domaine / Filière *</label>
- <select class="form-control" id="domaine">
+ <select class="form-control" id="domaine" required>
  <option value=""> Choisir </option>
- <option>Informatique</option>
- <option>Génie Civil</option>
- <option>Management</option>
- <option>Droit</option>
- <option>Sciences</option>
- <option>Autre</option>
+ <option>SI (Systèmes d'Information)</option>
+ <option>SIL (Systèmes d'Information et Logiciels)</option>
+ <option>RIT (Réseaux et Infrastructures de Télécoms)</option>
+ <option>ER (Energies Renouvelables)</option>
  </select>
  </div>
  </div>
@@ -84,10 +79,6 @@
  <div class="form-group">
  <label class="form-label">Résumé</label>
  <textarea class="form-control" id="resume" placeholder="Résumé court du mémoire" rows="4"></textarea>
- </div>
- <div class="form-group">
- <label class="form-label">Mots-clés</label>
- <input class="form-control" type="text" id="mots_cles" placeholder="Ex: IA, base de données, réseau"/>
  </div>
  </div>
  <!-- Upload fichier -->
@@ -100,20 +91,11 @@
  <p>Cliquez ou glissez votre fichier ici</p>
  <small>Format PDF uniquement Max 50 Mo</small>
  </div>
- <input type="file" id="file-input" accept=".pdf" style="display:none"/>
+ <input type="file" id="file-input" accept=".pdf" style="display:none" required/>
  <div id="file-preview" style="display:none" class="file-preview">
- <span class="file-icon"></span>
  <div class="file-info">
- <strong id="file-name"></strong>
- <span id="file-size"></span>
+ <strong id="file-name">nom-du-fichier.pdf</strong>
  </div>
- <button class="remove-file" onclick="removeFile()"></button>
- </div>
- <div class="progress-wrap" id="progress-wrap" style="display:none">
- <div class="progress-bar-bg">
- <div class="progress-bar-fill" id="progress-fill"></div>
- </div>
- <div class="progress-label" id="progress-label">0%</div>
  </div>
  </div>
  <div class="card">
@@ -127,7 +109,7 @@
  <option value="prive">Privé (validation requise)</option>
  </select>
  </div>
- <button class="btn btn-primary" style="width:100%;justify-content:center" onclick="submitMemoire()" id="submit-btn">
+ <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center" id="submit-btn">
  Publier le mémoire
  </button>
  <a href="dashboard.html" class="btn btn-ghost" style="width:100%;justify-content:center;margin-top:8px">
@@ -135,17 +117,20 @@
  </a>
  </div>
  </div>
- </div>
+ </form>
  </main>
  </div>
- <footer class="footer"> 2025 <span>UATM</span> Système de Gestion des Mémoires</footer>
- <script src="../../js/auth.js"></script>
- <script src="../../js/router.js"></script>
- <script src="../../js/pages/upload.js"></script>
+ <footer class="footer"> © 2026 <span>UATM</span> — Système de Gestion des Mémoires</footer>
+ <script src="../../js/ui.js"></script>
  <script>
- Router.guard('informaticien');
- const user = Auth.getUser();
- if (user) document.getElementById('user-name').textContent = user.nom || user.email;
+   // Petit script UI pour le nom du fichier
+   document.getElementById('file-input').addEventListener('change', e => {
+     if (e.target.files[0]) {
+       document.getElementById('file-name').textContent = e.target.files[0].name;
+       document.getElementById('file-preview').style.display = 'block';
+       document.getElementById('upload-zone').style.opacity = '0.5';
+     }
+   });
  </script>
 </body>
 </html>

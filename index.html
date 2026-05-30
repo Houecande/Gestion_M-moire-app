@@ -88,17 +88,6 @@
  <footer class="footer">
  © 2026 <span>UATM</span> — Système de Gestion des Mémoires Soutenus
  </footer>
- <script src="js/auth.js"></script>
- <script>
-   if (Auth.isLoggedIn()) {
-     const role = Auth.getRole();
-     const routes = {
-       informaticien: 'pages/informaticien/dashboard.html',
-       etudiant: 'pages/etudiant/dashboard.html',
-       diplome: 'pages/diplome/dashboard.html',
-       professeur: 'pages/professeur/dashboard.html',
-     };
-     if (routes[role]) window.location.href = routes[role];
-   }
- </script></body>
+ <script src="js/ui.js"></script>
+</body>
 </html>

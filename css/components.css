@@ -174,6 +174,42 @@ tbody td { padding: 12px 16px; font-size: 0.9rem; vertical-align: middle; }
 .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
 .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
 
+/* LIKE CHIP (Facebook Style) */
+.like-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--gris);
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--gris-texte);
+  cursor: pointer;
+  transition: var(--transition);
+  border: 1px solid transparent;
+  user-select: none;
+}
+.like-chip:hover { background: var(--gris-moyen); }
+.like-chip.active {
+  background: #e7f3ff;
+  color: #1877f2;
+}
+.like-chip .puce {
+  width: 18px;
+  height: 18px;
+  background: #1877f2;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 0.7rem;
+  box-shadow: 0 2px 4px rgba(24,119,242,0.3);
+}
+.like-chip.active .puce { background: #1877f2; }
+.like-chip:not(.active) .puce { background: var(--gris-moyen); color: var(--gris-texte); }
+
 /* FOOTER */
 .footer {
   background: var(--bleu-fonce);

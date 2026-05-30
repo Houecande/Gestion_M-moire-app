@@ -30,77 +30,28 @@
  <div class="login-box">
  <h2>Connexion</h2>
  <p class="login-subtitle">Accédez à votre espace personnel</p>
- <div id="alert-box" style="display:none"></div>
+ <form action="pages/etudiant/dashboard.html">
  <div class="form-group">
  <label class="form-label" for="email">Adresse e-mail</label>
- <input class="form-control" type="email" id="email" placeholder="exemple@uatm.edu"/>
+ <input class="form-control" type="email" id="email" placeholder="exemple@uatm.edu" required/>
  </div>
  <div class="form-group">
  <label class="form-label" for="password">Mot de passe</label>
  <div style="position:relative">
- <input class="form-control" type="password" id="password" placeholder=""/>
+ <input class="form-control" type="password" id="password" placeholder="••••••••" required/>
+ <button type="button" onclick="togglePassword(this)" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:1.2rem">👁️</button>
  </div>
  </div>
- <button class="btn btn-primary" style="width:100%;justify-content:center;margin-top:8px" onclick="handleLogin()" id="login-btn">
+ <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;margin-top:8px">
  Se connecter
  </button>
+ </form>
  <p style="text-align:center;margin-top:20px;font-size:0.85rem;color:var(--gris-texte)">
  Pas encore de compte ? <a href="#" style="color:var(--bleu);font-weight:600">Contacter l'administration</a>
  </p>
  </div>
  </div>
  </div>
- <script src="js/auth.js"></script>
- <script src="js/router.js"></script>
- <script>
-   // Si déjà connecté, rediriger
-   if (Auth.isLoggedIn()) Router.redirectToDashboard();
-
-   function togglePassword() {
-     const input = document.getElementById('password');
-     input.type = input.type === 'password' ? 'text' : 'password';
-   }
-
-   function showAlert(msg, type = 'error') {
-     const box = document.getElementById('alert-box');
-     box.className = `alert alert-${type}`;
-     box.textContent = msg;
-     box.style.display = 'flex';
-   }
-
-   function handleLogin() {
-     const email = document.getElementById('email').value.trim().toLowerCase();
-     const btn = document.getElementById('login-btn');
-
-     if (!email) { 
-       showAlert('Veuillez remplir tous les champs.'); 
-       return; 
-     }
-
-     btn.disabled = true;
-     btn.textContent = 'Connexion en cours';
-
-     // Simulation pour l'expérience utilisateur
-     setTimeout(() => {
-       let role = 'etudiant';
-       if (email.includes('prof')) role = 'professeur';
-       else if (email.includes('diplome')) role = 'diplome';
-       else if (email.includes('admin') || email.includes('info')) role = 'informaticien';
-
-       const user = {
-         nom: 'Utilisateur Test',
-         email: email,
-         role: role,
-         avatar: null
-       };
-
-       Auth.login(user);
-       Router.redirectToDashboard();
-     }, 800);
-   }
-
-   // Connexion avec Enter
-   document.addEventListener('keydown', e => { if (e.key === 'Enter') handleLogin(); });
- </script>
+ <script src="js/ui.js"></script>
 </body>
 </html>
