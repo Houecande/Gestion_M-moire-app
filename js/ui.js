@@ -1,8 +1,5 @@
-/**
- * JS pour les interactions visuelles uniquement (Version 2026 Statique)
- */
 document.addEventListener('DOMContentLoaded', () => {
-  // 1. Menu Actif dans la sidebar
+  // Menu Actif dans la sidebar
   const currentPath = window.location.pathname;
   const sidebarLinks = document.querySelectorAll('.sidebar a');
   sidebarLinks.forEach(link => {
@@ -11,7 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // 1.1 Mobile Menu Toggle
+  // Mobile Menu Toggle
   const menuToggle = document.querySelector('.menu-toggle');
   const sidebar = document.querySelector('.sidebar');
   if (menuToggle && sidebar) {
@@ -29,7 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
 
-    // Fermer le menu au clic sur le contenu principal (mobile)
+    // Fermer le menu au clic sur le contenu principal 
     document.querySelector('.main-content')?.addEventListener('click', () => {
       if (sidebar.classList.contains('open')) {
         sidebar.classList.remove('open');
@@ -41,7 +38,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // 2. Toggle Password visuel
   window.togglePassword = (btn) => {
     const input = btn.parentElement.querySelector('input');
     if (input) {
@@ -50,7 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
-  // 3. Like Chip Style Facebook (Toggle visuel)
+  // Like Style  
   window.toggleLike = (chip) => {
     chip.classList.toggle('active');
     const countSpan = chip.querySelector('.like-count');
@@ -61,7 +57,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
-  // 4. Scroll Reveal Simple
   const revealElements = document.querySelectorAll('.card, .hero-content, .feature-card');
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
@@ -79,7 +74,7 @@ document.addEventListener('DOMContentLoaded', () => {
     observer.observe(el);
   });
 
-  // 5. Validation des formulaires statiques
+  // Validation des formulaires statiques
   const forms = document.querySelectorAll('form');
   forms.forEach(form => {
     form.addEventListener('submit', (e) => {
@@ -99,7 +94,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (!isValid) {
         e.preventDefault();
-        // Optionnel: afficher une alerte visuelle simple
+        // afficher une alerte visuelle simple
         console.log('Formulaire invalide : champs requis manquants.');
       }
     });
