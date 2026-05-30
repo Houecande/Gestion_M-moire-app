@@ -8,6 +8,12 @@
   margin-bottom: 24px;
   border: 1px solid var(--bleu-clair);
 }
+
+@media (max-width: 600px) {
+  .search-bar { flex-direction: column; }
+  .search-filters { flex-direction: column; }
+  .search-filters select { width: 100%; }
+}
 .search-bar input   { flex: 1; border: 2px solid var(--gris-moyen); border-radius: var(--radius); padding: 10px 14px; font-family: var(--font-corps); outline: none; transition: var(--transition); }
 .search-bar input:focus { border-color: var(--bleu); }
 .search-filters { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }

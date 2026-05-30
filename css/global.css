@@ -21,11 +21,10 @@
 
   --transition:  all 0.2s ease;
 }
-
 /* Reset */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-html { scroll-behavior: smooth; }
+html { scroll-behavior: smooth; overflow-x: hidden; }
 
 body {
   font-family: var(--font-corps);
@@ -34,39 +33,49 @@ body {
   font-size: 15px;
   line-height: 1.6;
   min-height: 100vh;
+  overflow-x: hidden;
+  width: 100%;
 }
 
 a { text-decoration: none; color: inherit; transition: var(--transition); }
-img { max-width: 100%; display: block; }
+img { max-width: 100%; height: auto; display: block; }
 ul { list-style: none; }
 
 /* Typographie */
-h1, h2, h3, h4 { font-family: var(--font-titre); color: var(--bleu-fonce); line-height: 1.2; }
-h1 { font-size: 2rem; }
-h2 { font-size: 1.5rem; }
-h3 { font-size: 1.2rem; }
+h1, h2, h3, h4 { font-family: var(--font-titre); color: var(--bleu-fonce); line-height: 1.2; word-wrap: break-word; }
+h1 { font-size: clamp(1.5rem, 5vw, 2rem); }
+h2 { font-size: clamp(1.2rem, 4vw, 1.5rem); }
+h3 { font-size: clamp(1rem, 3vw, 1.2rem); }
 p  { color: var(--gris-texte); }
 
 /* Layout utilitaires */
-.container      { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
-
+.container { 
+  width: 100%;
+  max-width: 1200px; 
+  margin: 0 auto; 
+  padding: 0 20px; 
+}
 
 /* GRID  */
-.grid-2, .grid-3, .grid-4 { display: grid; gap: 20px; }
+.grid-2, .grid-3, .grid-4 { display: grid; gap: 20px; width: 100%; }
 .grid-2 { grid-template-columns: repeat(2, 1fr); }
 .grid-3 { grid-template-columns: repeat(3, 1fr); }
 .grid-4 { grid-template-columns: repeat(4, 1fr); }
 
 /* Responsive Grids */
-@media (max-width: 992px) {
+@media (max-width: 1024px) {
   .grid-4 { grid-template-columns: repeat(2, 1fr); }
-  .grid-3 { grid-template-columns: repeat(2, 1fr); }
 }
 
-@media (max-width: 600px) {
-  .grid-4, .grid-3, .grid-2 { grid-template-columns: 1fr; }
+@media (max-width: 768px) {
+  .grid-3 { grid-template-columns: repeat(2, 1fr); }
   .container { padding: 0 16px; }
 }
+
+@media (max-width: 580px) {
+  .grid-4, .grid-3, .grid-2 { grid-template-columns: 1fr; }
+}
+
 .flex           { display: flex; }
 .flex-center    { display: flex; align-items: center; justify-content: center; }
 .flex-between   { display: flex; align-items: center; justify-content: space-between; }

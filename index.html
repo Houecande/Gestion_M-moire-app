@@ -14,24 +14,40 @@
    justify-content: center;
    background: var(--bleu-fonce);
    position: relative;
+   overflow: hidden;
  }
- .hero-content { text-align: center; color: var(--blanc); position: relative; z-index: 1; padding: 40px 24px; } .hero-logo { width: 110px; margin: 0 auto 20px; filter: drop-shadow(0 4px 16px rgba(0,0,0,0.3)); }
- .hero-content h1 { font-size: 2.4rem; color: var(--blanc); margin-bottom: 10px; }
+ .hero-content { 
+   text-align: center; 
+   color: var(--blanc); 
+   position: relative; 
+   z-index: 1; 
+   padding: 60px 20px; 
+   width: 100%;
+   max-width: 800px;
+ } 
+ .hero-logo { width: clamp(80px, 15vw, 110px); margin: 0 auto 20px; filter: drop-shadow(0 4px 16px rgba(0,0,0,0.3)); }
+ .hero-content h1 { font-size: clamp(1.8rem, 8vw, 3rem); color: var(--blanc); margin-bottom: 10px; line-height: 1.1; }
  .hero-content h1 span { color: #f8c84a; }
- .hero-content p { color: rgba(255,255,255,0.8); font-size: 1.05rem; max-width: 520px; margin: 0 auto 32px; }
+ .hero-content p { color: rgba(255,255,255,0.8); font-size: clamp(0.95rem, 3vw, 1.1rem); max-width: 580px; margin: 0 auto 32px; line-height: 1.6; }
  .hero-divider { width: 60px; height: 3px; background: var(--rouge); margin: 16px auto; border-radius: 2px; }
  .hero-actions { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
  .btn-white { background: var(--blanc); color: var(--bleu); border-color: var(--blanc); }
  .btn-white:hover { background: var(--bleu-clair); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.2); }
  .btn-outline-white { background: transparent; color: var(--blanc); border: 2px solid rgba(255,255,255,0.6); }
  .btn-outline-white:hover { background: rgba(255,255,255,0.12); border-color: var(--blanc); }
- .features { padding: 64px 0; background: var(--gris); }
- .features h2 { text-align: center; margin-bottom: 8px; }
- .features .subtitle { text-align: center; color: var(--gris-texte); margin-bottom: 40px; }
- .feature-icon { font-size: 2rem; margin-bottom: 12px; }
- .feature-card { text-align: center; }
- .feature-card h3 { font-size: 1rem; margin-bottom: 6px; }
- .feature-card p { font-size: 0.88rem; }
+ 
+ @media (max-width: 600px) {
+   .hero-actions { flex-direction: column; }
+   .hero-actions .btn { width: 100%; justify-content: center; }
+   .navbar-nav { display: none; }
+ }
+
+ .features { padding: 80px 0; background: var(--gris); }
+ .features h2 { text-align: center; margin-bottom: 12px; font-size: clamp(1.5rem, 5vw, 2.2rem); }
+ .features .subtitle { text-align: center; color: var(--gris-texte); margin-bottom: 50px; font-size: 1rem; padding: 0 20px; }
+ .feature-card { text-align: center; padding: 32px 24px; }
+ .feature-card h3 { font-size: 1.1rem; margin-bottom: 10px; color: var(--bleu-fonce); }
+ .feature-card p { font-size: 0.9rem; line-height: 1.5; }
  </style>
 </head>
 <body>

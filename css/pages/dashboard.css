@@ -8,6 +8,16 @@
   margin-bottom: 28px;
 }
 
+@media (max-width: 1200px) {
+  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 600px) {
+  .stats-grid { grid-template-columns: 1fr; }
+  .welcome-banner { flex-direction: column; text-align: center; gap: 20px; }
+  .welcome-banner .welcome-icon { display: none; }
+}
+
 /* Activité récente */
 .recent-list { display: flex; flex-direction: column; gap: 12px; }
 .recent-item {
