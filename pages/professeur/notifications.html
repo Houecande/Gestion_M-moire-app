@@ -27,24 +27,20 @@
  .notif-body p { font-size: 0.85rem; color: var(--gris-texte); margin-bottom: 4px; }
  .notif-date { font-size: 0.75rem; color: var(--gris-texte); white-space: nowrap; }
  .notif-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--bleu); flex-shrink: 0; margin-top: 6px; }
- .filter-tabs { display: flex; gap: 8px; margin-bottom: 20px; }
- .filter-tab {
- padding: 8px 18px; border-radius: 20px; font-size: 0.85rem;
- font-weight: 600; cursor: pointer; border: 2px solid var(--gris-moyen);
- background: var(--blanc); color: var(--gris-texte); transition: var(--transition);
- }
- .filter-tab.active { background: var(--bleu); color: var(--blanc); border-color: var(--bleu); }
  </style>
 </head>
 <body class="dashboard-body">
  <nav class="navbar">
+ <button class="menu-toggle" aria-label="Menu">
+ <span></span><span></span><span></span>
+ </button>
  <div class="navbar-brand">
  <img src="../../assets/logo.png" alt="UATM"/>
  <div class="brand-text">UATM <span>Gestion des Mémoires</span></div>
  </div>
  <div class="navbar-user">
  <span class="badge badge-danger">Professeur</span>
- <strong class="user-name" id="user-name"></strong>
+ <strong class="user-name">Professeur</strong>
  </div>
  </nav>
  <div class="layout-with-sidebar">
@@ -57,7 +53,7 @@
  <div class="sidebar-section-title">Bibliothèque</div>
  <a href="../../pages/etudiant/recherche.html"> Rechercher</a>
  <div class="sidebar-logout">
- <button onclick="Auth.logout()"> Déconnexion</button>
+ <a href="../../login.html" class="btn btn-ghost btn-sm" style="width:100%;justify-content:center"> Déconnexion</a>
  </div>
  </aside>
  <main class="main-content">
@@ -66,86 +62,35 @@
  <h1> Notifications</h1>
  <p>Nouvelles soumissions et alertes de la plateforme.</p>
  </div>
- <button class="btn btn-ghost btn-sm" onclick="marquerToutesLues()"> Tout marquer comme lu</button>
- </div>
- <div class="filter-tabs">
- <button class="filter-tab active" onclick="filtrer('toutes', this)">Toutes <span id="count-toutes" class="badge badge-info" style="margin-left:4px"></span></button>
- <button class="filter-tab" onclick="filtrer('non-lue', this)">Non lues <span id="count-nonlues" class="badge badge-danger" style="margin-left:4px"></span></button>
- <button class="filter-tab" onclick="filtrer('soumission', this)">Nouvelles soumissions </button>
  </div>
  <div id="notif-list">
- <p style="text-align:center;padding:40px;color:var(--gris-texte)">Chargement</p>
+ <div class="notif-item non-lue soumission">
+ <div class="notif-icon soumission">📄</div>
+ <div class="notif-body">
+ <h4>Nouveau mémoire à valider</h4>
+ <p>Un étudiant a soumis son mémoire pour validation.</p>
+ <span class="badge badge-info" style="font-size:0.75rem"> Analyse de la cybersécurité</span>
+ <a href="valider-memoire.html" class="btn btn-primary btn-sm" style="margin-top:8px;display:inline-flex"> Traiter</a>
+ </div>
+ <div style="text-align:right;flex-shrink:0">
+ <div class="notif-date">12/05/2026</div>
+ <div class="notif-dot" style="margin:6px 0 0 auto"></div>
+ </div>
+ </div>
+ <div class="notif-item info">
+ <div class="notif-icon info">ℹ️</div>
+ <div class="notif-body">
+ <h4>Réunion départementale</h4>
+ <p>Une réunion est prévue demain à 14h.</p>
+ </div>
+ <div style="text-align:right;flex-shrink:0">
+ <div class="notif-date">10/05/2026</div>
+ </div>
+ </div>
  </div>
  </main>
  </div>
- <footer class="footer"> 2025 <span>UATM</span> Système de Gestion des Mémoires</footer>
- <script src="../../js/auth.js"></script>
- <script src="../../js/router.js"></script>
- <script src="../../js/pages/notifications.js"></script>
- <script>
- Router.guard('professeur');
- const user = Auth.getUser();
- if (user) document.getElementById('user-name').textContent = user.nom || user.email;
- let allNotifs = [];
- let filtreActif = 'toutes';
- async function loadNotifications() {
- const list = document.getElementById('notif-list');
- try {
- // Données simulées au lieu de l'appel API
- await new Promise(resolve => setTimeout(resolve, 500));
- const data = [
- { id: 1, type: 'soumission', titre: 'Nouveau mémoire à valider', message: 'Un étudiant a soumis son mémoire pour validation.', memoire_titre: 'Impact de la 5G sur la santé', soumission_id: '123', date: 'Il y a 10 min', lu: false },
- { id: 2, type: 'info', titre: 'Réunion départementale', message: 'Une réunion est prévue demain à 14h en salle de conférence.', date: 'Il y a 2h', lu: false },
- { id: 3, type: 'soumission', titre: 'Nouveau mémoire à valider', message: 'Une nouvelle soumission attend votre lecture.', memoire_titre: 'Blockchain et Logistique', soumission_id: '124', date: 'Hier', lu: true }
- ];
- allNotifs = data || [];
- document.getElementById('count-toutes').textContent = allNotifs.length;
- document.getElementById('count-nonlues').textContent = allNotifs.filter(n => !n.lu).length;
- renderNotifs(allNotifs);
- } catch(e) {
- list.innerHTML = '<p style="text-align:center;padding:40px;color:var(--gris-texte)">Impossible de charger les notifications.</p>';
- }
- }
- function renderNotifs(notifs) {
- const list = document.getElementById('notif-list');
- if (!notifs.length) {
- list.innerHTML = '<div class="alert alert-info">Aucune notification dans cette catégorie.</div>';
- return;
- }
- list.innerHTML = notifs.map(n => `
- <div class="notif-item ${!n.lu ? 'non-lue' : ''} ${n.type === 'soumission' ? 'soumission' : ''}">
- <div class="notif-icon ${n.type === 'soumission' ? 'soumission' : ''}">
- ${n.type === 'soumission' ? '' : ''}
- </div>
- <div class="notif-body">
- <h4>${n.titre}</h4>
- <p>${n.message}</p>
- ${n.memoire_titre ? `<span class="badge badge-info" style="font-size:0.75rem"> ${n.memoire_titre}</span>` : ''}
- ${n.soumission_id ? `<a href="valider-memoire.html?id=${n.soumission_id}" class="btn btn-primary btn-sm" style="margin-top:8px;display:inline-flex"> Traiter</a>` : ''}
- </div>
- <div style="text-align:right;flex-shrink:0">
- <div class="notif-date">${n.date}</div>
- ${!n.lu ? '<div class="notif-dot" style="margin:6px 0 0 auto"></div>' : ''}
- </div>
- </div>
- `).join('');
- }
- function filtrer(type, btn) {
- filtreActif = type;
- document.querySelectorAll('.filter-tab').forEach(b => b.classList.remove('active'));
- btn.classList.add('active');
- let filtered = allNotifs;
- if (type === 'non-lue') filtered = allNotifs.filter(n => !n.lu);
- else if (type !== 'toutes') filtered = allNotifs.filter(n => n.type === type);
- renderNotifs(filtered);
- }
- async function marquerToutesLues() {
- await Notifications.markAllRead();
- allNotifs = allNotifs.map(n => ({ ...n, lu: true }));
- document.getElementById('count-nonlues').textContent = '0';
- renderNotifs(filtreActif === 'toutes' ? allNotifs : allNotifs.filter(n => filtreActif === 'non-lue' ? false : n.type === filtreActif));
- }
- loadNotifications();
- </script>
+ <footer class="footer"> © 2026 <span>UATM</span> — Système de Gestion des Mémoires</footer>
+ <script src="../../js/ui.js"></script>
 </body>
 </html>

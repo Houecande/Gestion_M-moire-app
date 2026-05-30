@@ -2,14 +2,14 @@
 .navbar {
   background: var(--blanc);
   border-bottom: 3px solid var(--bleu);
-  padding: 0 32px;
+  padding: 0 20px;
   height: 68px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   position: sticky;
   top: 0;
-  z-index: 100;
+  z-index: 1000;
   box-shadow: var(--ombre);
 }
 .navbar-brand {
@@ -17,32 +17,46 @@
   align-items: center;
   gap: 12px;
 }
-.navbar-brand img { height: 46px; width: auto; }
-.navbar-brand .brand-text { font-family: var(--font-titre); font-size: 0.95rem; color: var(--bleu-fonce); line-height: 1.3; }
-.navbar-brand .brand-text span { display: block; font-size: 0.72rem; color: var(--rouge); font-family: var(--font-corps); font-weight: 600; letter-spacing: 1px; text-transform: uppercase; }
-.navbar-nav { display: flex; align-items: center; gap: 8px; }
-.navbar-nav a {
-  padding: 7px 16px;
-  border-radius: var(--radius);
-  font-weight: 500;
-  font-size: 0.88rem;
-  color: var(--gris-texte);
+.navbar-brand img { height: 40px; width: auto; }
+.navbar-brand .brand-text { font-family: var(--font-titre); font-size: 0.9rem; color: var(--bleu-fonce); line-height: 1.2; }
+.navbar-brand .brand-text span { display: block; font-size: 0.65rem; color: var(--rouge); font-family: var(--font-corps); font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; }
+
+/* Hamburger Menu */
+.menu-toggle {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 10px;
+  z-index: 1001;
 }
-.navbar-nav a:hover, .navbar-nav a.active { background: var(--bleu-clair); color: var(--bleu); }
+.menu-toggle span {
+  display: block;
+  width: 25px;
+  height: 3px;
+  background: var(--bleu);
+  border-radius: 2px;
+  transition: var(--transition);
+}
+
+.navbar-nav { display: flex; align-items: center; gap: 8px; }
 .navbar-user { display: flex; align-items: center; gap: 10px; font-size: 0.88rem; }
 .navbar-user .user-name { font-weight: 600; color: var(--bleu-fonce); }
 
 /* SIDEBAR */
 .layout-with-sidebar { display: flex; min-height: calc(100vh - 68px); }
 .sidebar {
-  width: 240px;
-  min-width: 240px;
+  width: 260px;
+  min-width: 260px;
   background: var(--blanc);
   border-right: 2px solid var(--bleu-clair);
   padding: 24px 0;
   display: flex;
   flex-direction: column;
   gap: 4px;
+  transition: transform 0.3s ease;
 }
 .sidebar-section-title {
   font-size: 0.7rem;
@@ -56,17 +70,43 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 10px 20px;
+  padding: 12px 20px;
   color: var(--gris-texte);
   font-weight: 500;
   font-size: 0.9rem;
-  border-left: 3px solid transparent;
+  border-left: 4px solid transparent;
   transition: var(--transition);
 }
 .sidebar a:hover  { background: var(--bleu-clair); color: var(--bleu); border-left-color: var(--bleu); }
 .sidebar a.active { background: var(--bleu-clair); color: var(--bleu); border-left-color: var(--bleu); font-weight: 600; }
-.sidebar a .icon  { font-size: 1.1rem; width: 20px; text-align: center; }
-.main-content     { flex: 1; padding: 32px; overflow-y: auto; }
+.sidebar-logout { margin-top: auto; padding: 20px; border-top: 1px solid var(--gris); }
+
+.main-content { flex: 1; padding: 32px; overflow-y: auto; max-width: 100%; }
+
+/* Responsive Dashboard & Sidebar */
+@media (max-width: 992px) {
+  .menu-toggle { display: flex; }
+  
+  .sidebar {
+    position: fixed;
+    top: 68px;
+    left: 0;
+    bottom: 0;
+    z-index: 999;
+    transform: translateX(-100%);
+    box-shadow: var(--ombre-forte);
+  }
+  .sidebar.open { transform: translateX(0); }
+  
+  .main-content { padding: 20px; }
+}
+
+@media (max-width: 600px) {
+  .navbar-brand .brand-text { display: none; }
+  .navbar { padding: 0 12px; }
+  .main-content { padding: 16px; }
+  .navbar-user .user-name { display: none; }
+}
 
 /* BOUTONS */
 .btn {
@@ -174,7 +214,6 @@ tbody td { padding: 12px 16px; font-size: 0.9rem; vertical-align: middle; }
 .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
 .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
 
-/* LIKE CHIP (Facebook Style) */
 .like-chip {
   display: inline-flex;
   align-items: center;
